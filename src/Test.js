@@ -1,8 +1,29 @@
-import React, {Component} from 'react'
+import React, {Component, Fragment} from 'react'
 import eventDrops from 'event-drops'
 import * as d3 from 'd3'
+import Tooltips from './Tooltips';
 
-const chart = eventDrops({d3})
+const tooltip = d3
+    .select('.tooltip');
+
+const chart = eventDrops({
+    d3,
+    drop: {
+        onMouseOver: commit =>{
+            tooltip
+                .transition()
+                .duration(200)
+                .style('opacity', 1)
+                .style('left', `${d3.event.pageX - 30}px`)
+                .style('pointer-events', 'auto')
+                .style('top', `${d3.event.pageY + 20}px`);  
+            this.setState(() => ({
+                commit: commit
+            }))
+        }
+    }
+});
+
 const repositoriesData = [
     {
         name: 'react-test',
@@ -35,16 +56,25 @@ const demoStyle = {
 
 }
 class Dropsdemo extends Component {
-    
+    constructor(props) {
+        super(props);
+        this.state = {
+            commit: {}
+        }
+    }
     componentDidMount() {
         d3
         .select('#eventdrops-demo')
         .data([repositoriesData])
-        .call(chart)
+        .call(chart);
     }
+
     render() {
         return (
-            <div className='drops' id='eventdrops-demo' style={demoStyle}></div>
+            <Fragment>
+                <div className='drops' id='eventdrops-demo' style={demoStyle}></div>
+                <Tooltips commit={this.state.commit} />
+            </Fragment> 
         )
     }
 }

@@ -2,20 +2,16 @@ import React, {Component, Fragment} from 'react'
 import eventDrops from 'event-drops'
 import * as d3 from 'd3'
 import Tooltips from '../ToolTips/Tooltips';
-
-const repositories= require('../../../public/data.json')
+const repositories= require('../../data.json')
 const repositoriesData = repositories.map(repository => ({
     name: repository.name,
     data: repository.commits,
 }));
-
 const demoStyle = {
     width: '90%',
     height: '100px'
 }
-
 class Dropsdemo extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -30,7 +26,6 @@ class Dropsdemo extends Component {
             }
         }
     }
-
     componentDidMount() {
         const tooltip = d3
              .select('.tooltip')
@@ -57,18 +52,13 @@ class Dropsdemo extends Component {
                     .style('pointer-events', 'none');
             }
         }
-
         let d2 = {d3,drop}
         const chart = eventDrops(d2)
-
         d3
         .select('#eventdrops-demo')
         .data([repositoriesData])
         .call(chart);
-
-
     }
-
     render() {
         return (
             <Fragment>

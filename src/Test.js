@@ -1,13 +1,11 @@
 import React, {Component, Fragment} from 'react'
-import eventDrops from 'event-drops'
-import * as d3 from 'd3'
+import eventDrops from 'event-drops';
+import * as d3 from 'd3';
 import Tooltips from './Tooltips';
+import axios from 'axios';
+import store from './store';
 
-const repositories= require('./data.json')
-const repositoriesData = repositories.map(repository => ({
-    name: repository.name,
-    data: repository.commits,
-}));
+
 
 const demoStyle = {
     width: '90%',
@@ -18,6 +16,8 @@ class Dropsdemo extends Component {
 
     constructor(props) {
         super(props);
+        this.handleRepChange = this.handleRepChange.bind(this);
+        store.subscribe(this.handleRepChange);
         this.state = {
             commit: {
                 sha: '',
@@ -27,17 +27,29 @@ class Dropsdemo extends Component {
                     name: ''
                 },
                 date:''
-            }
+            },
+            data: []
         }
     }
+    handleRepChange(){
+        this.setState(() =>({
+            data: store.getState().data
+        }))
 
-    componentDidMount() {
+        // const repositories= require('./data.json')
+        const repositories= this.state.data;
+        const repositoriesData = repositories.map(repository => ({
+            name: repository.name,
+            data: repository.commits,
+        }));
+
         const tooltip = d3
-             .select('.tooltip')
+                .select('.tooltip')
 
         let drop ={
             date: d => new Date(d.date),
             onMouseOver: commit =>{
+                
                 tooltip
                     .transition()
                     .duration(200)
@@ -64,12 +76,27 @@ class Dropsdemo extends Component {
         d3
         .select('#eventdrops-demo')
         .data([repositoriesData])
-        .call(chart);
+        .call(chart);  
 
 
     }
 
+    componentDidMount() {
+        axios.get('/date.json').then((res) => {
+            const data = res.data;
+            const action = {
+                type: 'init_redux',
+                data: data
+            }
+            store.dispatch(action)
+        })
+
+    }
+
+
+
     render() {
+       
         return (
             <Fragment>
                 <div className='drops' id='eventdrops-demo' style={demoStyle}></div>

@@ -1,0 +1,66 @@
+import React, {Component, Fragment} from 'react'
+import eventDrops from 'event-drops'
+import * as d3 from 'd3'
+import Tooltips from '../ToolTips/Tooltips';
+
+const repositories= require('../../../public/data.json')
+const repositoriesData = repositories.map(repository => ({
+    name: repository.name,
+    data: repository.commits,
+}));
+
+const demoStyle = {
+    width: '90%',
+    height: '100px'
+}
+
+class Dropsdemo extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            commit: {}
+        }
+    }
+
+    componentDidMount() {
+        const tooltip = d3
+             .select('.tooltip')
+
+        let drop ={
+            date: d => new Date(d.date),
+            onMouseOver: commit =>{
+                tooltip
+                    .transition()
+                    .duration(200)
+                    .style('opacity', 1)
+                    .style('left', `${d3.event.pageX - 30}px`)
+                    .style('pointer-events', 'auto')
+                    .style('top', `${d3.event.pageY + 20}px`);  
+                this.setState(() => ({
+                    commit: commit,
+                }))
+            }
+        }
+        let d2 = {d3,drop}
+        const chart = eventDrops(d2)
+
+        d3
+        .select('#eventdrops-demo')
+        .data([repositoriesData])
+        .call(chart);
+
+
+    }
+
+    render() {
+        return (
+            <Fragment>
+                <div className='drops' id='eventdrops-demo' style={demoStyle}></div>
+                <Tooltips commit={this.state.commit} />
+                
+            </Fragment> 
+        )
+    }
+}
+export default Dropsdemo

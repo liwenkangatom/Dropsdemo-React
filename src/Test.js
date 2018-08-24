@@ -5,15 +5,8 @@ import * as d3 from 'd3'
 let drop ={
     date: d => new Date(d.date)
 }
-let d2 = {d3,drop}
-const d4 = {d3, drop:{
-    date: d => new Date(d.date)
-}}
-console.log(JSON.stringify(d2))
-console.log(JSON.stringify(d4))
-console.log(Object.is(d2, d4))
-
-const chart = eventDrops(d2)
+let chartconfig = {d3,drop}
+const chart = eventDrops(chartconfig)
 const repositories= require('./data.json')
 const repositoriesData = repositories.map(repository => ({
     name: repository.name,

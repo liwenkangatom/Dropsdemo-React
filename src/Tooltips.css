@@ -8,3 +8,19 @@
     line-height: 1.4rem;
     opacity: 0;
 }
+.tooltip::before{
+    position: absolute;
+    background-color: #fff;
+    content: "";
+    display: block;
+    top: -.65rem;
+    width: 1rem;
+    height: 1rem;
+    border: 3px solid #e7e7e7;
+    border-width: 3px 0 0 3px;
+    transform: rotate(45deg);
+    z-index: 1;
+}
+img{
+    float: left;
+}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Dropsdemo from './Test'
+import Modal from './modal'
 
 class App extends Component {
   render() {
@@ -11,6 +11,7 @@ class App extends Component {
           <h1 className="App-title">Dropsdemo-React</h1>
         </header>
         <Dropsdemo />
+        <Modal />
       </div>
     );
   }

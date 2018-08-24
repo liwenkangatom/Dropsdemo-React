@@ -19,7 +19,15 @@ class Dropsdemo extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            commit: {}
+            commit: {
+                sha: '',
+                message: '',
+                author: {
+                    email: '',
+                    name: ''
+                },
+                date:''
+            }
         }
     }
 
@@ -40,8 +48,16 @@ class Dropsdemo extends Component {
                 this.setState(() => ({
                     commit: commit,
                 }))
+            },
+            onMouseOut: () => {
+                tooltip
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 0)
+                    .style('pointer-events', 'none');
             }
         }
+
         let d2 = {d3,drop}
         const chart = eventDrops(d2)
 

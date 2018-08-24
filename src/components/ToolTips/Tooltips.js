@@ -2,20 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import './Tooltips.css';
 class Tooltips extends Component {
-<<<<<<< HEAD:src/components/ToolTips/Tooltips.js
-static defaultProps = {
-  commit: 'helle',
-  name: 'hahah'
-}
-  render() {
-    
-    console.log(this.props);
-=======
 
   render() {
     const { commit } = this.props; 
 
->>>>>>> c13aeddec839de328cfa3f7ff7d24e07fd71e210:src/Tooltips.js
     return (
       
       <div className='tooltip'>

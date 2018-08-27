@@ -1,19 +1,14 @@
 import React, {Component, Fragment} from 'react'
 import eventDrops from 'event-drops';
 import * as d3 from 'd3';
-import Tooltips from './Tooltips';
-import axios from 'axios';
-import store from './store';
-
-
+import Tooltips from '../ToolTips/Tooltips';
+import store from '../../store';
 
 const demoStyle = {
     width: '90%',
     height: '100px'
 }
-
 class Dropsdemo extends Component {
-
     constructor(props) {
         super(props);
         this.handleRepChange = this.handleRepChange.bind(this);
@@ -31,12 +26,12 @@ class Dropsdemo extends Component {
             data: []
         }
     }
+
     handleRepChange(){
+       
         this.setState(() =>({
             data: store.getState().data
         }))
-
-        // const repositories= require('./data.json')
         const repositories= this.state.data;
         const repositoriesData = repositories.map(repository => ({
             name: repository.name,
@@ -69,31 +64,24 @@ class Dropsdemo extends Component {
                     .style('pointer-events', 'none');
             }
         }
-
         let d2 = {d3,drop}
         const chart = eventDrops(d2)
-
         d3
         .select('#eventdrops-demo')
         .data([repositoriesData])
         .call(chart);  
-
-
+    
     }
 
+    componentWillMount() {
+        this.setState(() =>({
+            data: store.getState().data
+        }))
+        
+    }
     componentDidMount() {
-        axios.get('/date.json').then((res) => {
-            const data = res.data;
-            const action = {
-                type: 'init_redux',
-                data: data
-            }
-            store.dispatch(action)
-        })
-
+        this.handleRepChange();
     }
-
-
 
     render() {
        

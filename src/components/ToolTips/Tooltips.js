@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import './Tooltips.css';
-
-
 class Tooltips extends Component {
 
   render() {

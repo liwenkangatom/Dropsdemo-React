@@ -8,7 +8,7 @@
 
 # production
 /build
-
+/Event.Client
 # misc
 .DS_Store
 .env.local

@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react'
 import eventDrops from 'event-drops'
 import * as d3 from 'd3'
 import Tooltips from '../ToolTips/Tooltips';
+import ModalDemo from '../Modal/modal'
 const repositories= require('../../data.json')
 const repositoriesData = repositories.map(repository => ({
     name: repository.name,
@@ -62,9 +63,10 @@ class Dropsdemo extends Component {
     render() {
         return (
             <Fragment>
-                <div className='drops' id='eventdrops-demo' style={demoStyle}></div>
+                <div className='drops' id='eventdrops-demo' style={demoStyle}>
+                    <ModalDemo></ModalDemo>
+                </div>
                 <Tooltips commit={this.state.commit} />
-                
             </Fragment> 
         )
     }

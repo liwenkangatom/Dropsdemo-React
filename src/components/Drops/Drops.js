@@ -2,17 +2,8 @@ import React, {Component, Fragment} from 'react'
 import eventDrops from 'event-drops';
 import * as d3 from 'd3';
 import Tooltips from '../ToolTips/Tooltips';
-<<<<<<< HEAD
-import ModalDemo from '../Modal/modal'
-const repositories= require('../../data.json')
-const repositoriesData = repositories.map(repository => ({
-    name: repository.name,
-    data: repository.commits,
-}));
-=======
 import store from '../../store';
 
->>>>>>> ff89af305f1e09345102c53e6db16ac15c42fa85
 const demoStyle = {
     width: '90%',
     height: '100px'

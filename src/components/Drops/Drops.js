@@ -33,6 +33,7 @@ class Dropsdemo extends Component {
             data: store.getState().data
         }))
         const repositories= this.state.data;
+        console.log(this.state)
         const repositoriesData = repositories.map(repository => ({
             name: repository.name,
             data: repository.commits,
@@ -88,7 +89,6 @@ class Dropsdemo extends Component {
         return (
             <Fragment>
                 <div className='drops' id='eventdrops-demo' style={demoStyle}>
-                    <ModalDemo></ModalDemo>
                 </div>
                 <Tooltips commit={this.state.commit} />
             </Fragment> 

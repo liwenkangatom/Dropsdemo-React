@@ -2,7 +2,7 @@ import {actionTypes} from '../compnents/constent.js'
 import {call, put, takeEvery, take} from 'redux-saga/effects'
 import {apiUrls} from '../api'
 function* sagaPart(action) {
-    conole.log(action)
+    console.log(action)
     const apiget = function() {
         return fetch(`${apiUrls.sagaParturl}?key=${action.payload}...`,{
             method: 'GET'

@@ -10,7 +10,7 @@ const LOAD_EVENTS = 'LOAD_EVENTS'
 const LOAD_EVENTS_SUCCESS = 'LOAD_EVENTS_SUCCESS'
 const LOAD_EVENTS_ERROR = 'LOAD_EVENTS_ERROR'
 
-const apiUrl = 'locahttp://localhost:4000/etps/tagsall'
+const apiUrl = 'http://localhost:4000/etps/tagsall'
 
 // ACTION CREATOR
 export function loadEvents() {
@@ -21,7 +21,7 @@ export function loadEvents() {
 }
 
 // REDUCER
-function events(state = initialState, action) {
+export default function events(state = initialState, action) {
     switch (action.type) {
         case 'CHANGE_QUERY': {
             return {
@@ -55,4 +55,3 @@ function events(state = initialState, action) {
             return state
     }
 }
-export default events

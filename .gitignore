@@ -1,5 +1,9 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
+<<<<<<< HEAD
 .svn
+=======
+
+>>>>>>> 031e9ffbcd524465ce57fe7a0d96ae2461fe83ea
 # dependencies
 /node_modules
 
@@ -19,3 +23,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+<<<<<<< HEAD
+=======
+.gitignore
+>>>>>>> 031e9ffbcd524465ce57fe7a0d96ae2461fe83ea

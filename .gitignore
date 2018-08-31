@@ -1,15 +1,27 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
+<<<<<<< HEAD
 /.svn
 /.git
 # dependencies
 /node_modules
 
 # testin
+=======
+
+# dependencies
+/node_modules
+
+# testing
+>>>>>>> b4e615940b280eaf3b280c9f4c028c9cd82674a0
 /coverage
 
 # production
 /build
+<<<<<<< HEAD
 
+=======
+/Event.Client
+>>>>>>> b4e615940b280eaf3b280c9f4c028c9cd82674a0
 # misc
 .DS_Store
 .env.local
@@ -20,3 +32,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+<<<<<<< HEAD
+=======
+.gitignore
+>>>>>>> b4e615940b280eaf3b280c9f4c028c9cd82674a0

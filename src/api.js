@@ -1,4 +1,4 @@
-const Api_Root='http://localhost/etps/'
+const Api_Root='http://localhost:4000/etps/'
 // add tags (param={content})
 const add_Tag_Param_Url = Api_Root + 'tag/add/'
 // delete tags (param = tagId)
@@ -6,7 +6,7 @@ const delete_Tags_Id_Url = Api_Root + 'tag/delete/'
 // change tags by tagid (param = {tagid: ,tagcontent: })
 const change_Tag_Id_Param_Url = Api_Root + 'tag/change/'
 // select tagsall
-const select_Tags_All_Url = Api_Root + 'tag/select/'
+const select_Tags_All_Url = Api_Root + 'tag/select'
 // add events (content) 
 const add_Event_Param_Url = Api_Root + 'event/add/'
 // delete events (by id)

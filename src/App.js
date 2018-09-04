@@ -6,6 +6,9 @@ import Header from './components/Header';
 import LeftSlideBar from './components/LeftSlideBar'
 import Manage from './views/EventManage'
 import { store } from './redux/reduxconfigure'
+// import Tree from './components/Test/Test'
+
+
 
 class App extends Component {
   render() {
@@ -16,6 +19,7 @@ class App extends Component {
         <LeftSlideBar/>
       </div>
       </Provider>
+      // <Tree></Tree>
     );
   }
 }

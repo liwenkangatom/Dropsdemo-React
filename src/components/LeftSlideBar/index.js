@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Icon, Tree, Tooltip} from 'antd';
+import { Layout, Icon, Tree, Tooltip, Input} from 'antd';
 import ReactDOM from 'react-dom';
 
 import * as Actions from './LeftSliderBarRedux'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+
 
 import RightBar from '../RightBar'
 import { Search, 
@@ -16,7 +17,6 @@ import { Search,
          Menu,
          MenuItem
 } from './style';
-
 const TreeNode = Tree.TreeNode;
 const { Sider } = Layout;
 const gData = [{
@@ -38,7 +38,7 @@ const gData = [{
   key: '1',
   children:[{
     title: 'Admin On Rest1',
-    key: '1-1',
+    key: '18',
     num: 50
   },{
     title: 'Adimin On Rest2',
@@ -46,7 +46,7 @@ const gData = [{
     num: 12,
     children:[{
       title: 'Proforma',
-      key: '1-2-1',
+      key: '11',
       num: 12
     }]
   },{
@@ -64,7 +64,7 @@ const generateList = (data) => {
     const key = node.key;
     dataList.push({ key, title: node.title });
     if (node.children) {
-      generateList(node.children, node.key);
+      generateList(node.children, node.Key);
     }
   }
 };
@@ -95,11 +95,13 @@ class LeftSlideBar extends Component {
       collapsed: true,
       searchValue:'',
       expandedKeys: [],
-      selectedKeys: [],
+      selectedKey: [],
+      menux: 0,
+      menuy: 0,
       autoExpandParent: true,
+      inputvisible: false
     }
   }
-
   onExpand = (expandedKeys) => {
     this.setState({
       expandedKeys,
@@ -115,7 +117,7 @@ class LeftSlideBar extends Component {
   }
 
   onCheck = (checkedKeys, info) => {
-    console.log('onCheck', checkedKeys, info);
+    console.log(info);
   }
 
   onCollapse = (collapsed) => {
@@ -124,8 +126,17 @@ class LeftSlideBar extends Component {
 
   onRightClick = (info) => {
     console.log('right click', info);
-    this.setState({ selectedKeys: [info.node.props.eventKey] });
-    this.renderCm(info);
+    let menux = info.event.pageX-999
+    let menuy = info.event.pageY
+    let selectedKey = info.node.props.eventKey
+    this.setState({ selectedKey: selectedKey,
+    menux,
+  menuy}, ()=>{
+    this.renderCm()
+  })
+
+
+    console.log(this.state )
   }
 
   onchange = (e) => {
@@ -144,18 +155,32 @@ class LeftSlideBar extends Component {
     
   }
 
-  handleAddTag = () => {
-    console.log("add");
+  handleAddTag = (info) => {
+    console.log(info)
+    // this.renderinput(info)
+    // this.props.addTag('testTag', this.state.selectedKey)
+    // this.props.initTag()
+    console.log("info");
   }
 
-  handleRename = () => {
-    console.log('rename');
+  handleRename = (info) => {
+    this.setState({inputvisible: true}, ()=>{
+      this.renderCm(info)
+    })
+    console.log(info);
   }
 
-  handleDelete = () => {
-    console.log('delete');
+handleDelete= (info) =>{
+  this.props.deleteTag(this.state.selectedKey)
+  this.props.initTag()
+    console.log(info);
   }
 
+
+componentWillMount() {
+  console.log(dataList)
+  this.props.initTag()
+}
 
   componentDidMount(){
     this.getContainer();
@@ -175,13 +200,37 @@ class LeftSlideBar extends Component {
     }
     return this.cmContainer;
   }
+// renderinput() {
+//   if(this.input) {
+//     ReactDOM.unmountComponentAtNode(this.cmContainer)
+//     this.input = null
+//   }
+//   this.input = (
+//     <Input
+//     size='small'
 
+//     ></Input>
+//   )
+
+//     const container = this.getContainer();
+//     const theleft = this.state.menux;
+//     Object.assign(this.cmContainer.style, {
+//       position: 'absolute',
+//       left: `${theleft}px`,
+//       top: `${this.state.menuy}px`,
+//     });
+
+//     ReactDOM.render(this.input, container);
+
+// }
   //生成右击菜单
   renderCm(info) {
+
     if (this.menu) {
       ReactDOM.unmountComponentAtNode(this.cmContainer);
       this.menu = null;
     }
+    const visible=this.state.inputvisible?{'display':'block'}:{'display':'none'}
     this.menu = (
       <Tooltip
         trigger="click" 
@@ -190,6 +239,7 @@ class LeftSlideBar extends Component {
 
         title={
             <Menu>
+            <Input style={visible}></Input>
             <MenuItem onClick={this.handleDelete}>Delete</MenuItem>
             <MenuItem onClick={this.handleRename}>Rename</MenuItem>
             <MenuItem onClick={this.handleAddTag}>Add a tag</MenuItem>
@@ -201,11 +251,11 @@ class LeftSlideBar extends Component {
     );
 
     const container = this.getContainer();
-    const theleft = info.event.pageX -999;
+    // const theleft = info.event.pageX -999;
     Object.assign(this.cmContainer.style, {
       position: 'absolute',
-      left: `${theleft}px`,
-      top: `${info.event.pageY}px`,
+      left: `${this.state.menux}px`,
+      top: `${this.state.menuy}px`,
     });
 
     ReactDOM.render(this.menu, container);
@@ -219,7 +269,6 @@ class LeftSlideBar extends Component {
       const beforeStr = item.title.substr(0, index);
       const afterStr = item.title.substr(index + searchValue.length);
       const title = index > -1 ? (
-        
         <span>
           {beforeStr}
           <span style={{ color: '#f50' }}>{searchValue}</span>
@@ -237,7 +286,7 @@ class LeftSlideBar extends Component {
     });
 
     return (
-      <Layout style={{ minHeight: '100vh' }}>
+      <Layout style={{ minHeight: '100vh' }}>   
         <Sider
           collapsible
           collapsed={this.state.collapsed}
@@ -274,9 +323,10 @@ class LeftSlideBar extends Component {
             onCheck={this.onCheck} 
             selectedKeys={this.state.selectedKeys}   
           >
-            {loop(gData)}
+            {loop(this.props.dropsValue)}
             
-          </Tree>
+          </Tree>     
+          
         </Sider>
 
 
@@ -290,13 +340,20 @@ class LeftSlideBar extends Component {
 function mapStateToProps(state) {
     console.log(state)
     return {
-        dropsValue: state.tag.gData
+        dropsValue: state.tag.gData,
+        dataList: state.tag.dataList,
+        error: state.tag.error,
+        loading: state.tag.loading
+        
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
-        dropAction: bindActionCreators(Actions.addtag, dispatch),
-        
+        initTag: bindActionCreators(Actions.refreshtags, dispatch),
+        addTag: bindActionCreators(Actions.addtag, dispatch),
+        renameTag: bindActionCreators(Actions.renametag, dispatch),
+        deleteTag: bindActionCreators(Actions.deletetag, dispatch),
+        onSelect: bindActionCreators(Actions.onSelect, dispatch),
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LeftSlideBar)

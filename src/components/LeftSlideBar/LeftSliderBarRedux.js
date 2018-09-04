@@ -23,20 +23,22 @@ import api from '../../api'
     const RENAME_TAG_ERROR = 'RENAME_TAG_ERROR'
 
     //  sync
-    const ONEXPAND = 'EXPAND'
+    // const ONEXPAND = 'EXPAND'
     const ONSELECT = 'ONSELECT'
-    const ONCHECK = 'ONCHECK'
-    const ONCOLLAPSE = 'CNCOLLAPSE'
-    const ONRIGHTCLICK = 'ONRIGHTCLICK'
-    const ONCHANGE = 'ONCHANGE'
+    // const ONCHECK = 'ONCHECK'
+    // const ONCOLLAPSE = 'CNCOLLAPSE'
+    // const ONRIGHTCLICK = 'ONRIGHTCLICK'
+    // const ONCHANGE = 'ONCHANGE'
 // ACTIONS  CREATOR
 export function refreshtags() {
+    console.log('refreshs')
     return {
         url: api.select_Tags_All_Url,
         types: [GET_TAGS_ALL, GET_TAGS_ALL_SUCCESS, GET_TAGS_ALL_ERROR]
     }
 }
 export function addtag(name, parent) {
+    console.log('addtag')
     return {
         url: api.add_Tag_Param_Url,
         types:[ ADD_TAG, ADD_TAG_SUCCESS, ADD_TAG_ERROR],
@@ -66,14 +68,14 @@ export function renametag(id, name){
     }
 }
 
-export function onExpand(expandedKeys){
-    return {
-        type: ONEXPAND,
-        payload: {
-            expandedKeys
-        }
-    }
-}
+// export function onExpand(expandedKeys){
+//     return {
+//         type: ONEXPAND,
+//         payload: {
+//             expandedKeys
+//         }
+//     }
+// }
 export function onSelect(selectedKeys, info) {
     return {
         type: ONSELECT,
@@ -84,69 +86,67 @@ export function onSelect(selectedKeys, info) {
     }
 }
 // 操作drops state 写在
-export function onCheck(checkedKeys, info) {
-    return {
-        type: ONCHECK,
-        payload: {
-            checkedKeys,
-            info
-        }
-    }
-}
-export function onCollapse(collapsed) {
-    return {
-        type: ONCOLLAPSE,
-        payload: {
-            collapsed
-        }
-    }
-}
-export function onRightClick(info) {
-    return {
-        type: ONRIGHTCLICK, 
-        payload: {
-            info
-        }
-    }
-}
-export function onChange(e, dataList) {
-    return {
-        type: ONCHANGE,
-        payload: {
-            e,
-            dataList
-        }
-    }
-}
+// export function onCheck(checkedKeys, info) {
+//     return {
+//         type: ONCHECK,
+//         payload: {
+//             checkedKeys,
+//             info
+//         }
+//     }
+// }
+// export function onCollapse(collapsed) {
+//     return {
+//         type: ONCOLLAPSE,
+//         payload: {
+//             collapsed
+//         }
+//     }
+// }
+// export function onRightClick(info) {
+//     return {
+//         type: ONRIGHTCLICK, 
+//         payload: {
+//             info
+//         }
+//     }
+// }
+// export function onChange(e, dataList) {
+//     return {
+//         type: ONCHANGE,
+//         payload: {
+//             e,
+//             dataList
+//         }
+//     }
+// }
 // REDUCERS
 const initState = {
-    info:{},
-    cmshow: false,
 
     checkedKeys: [],
 
     gData:[],
-
     dataList: [],
-    collapsed: true,
-    searchValue:'',
-    expandedKeys: [],
-    selectedKeys: [],
-    autoExpandParent: true,
+    
+
+
     error: false,
     loading: true
 }
-
+const generateList = (data=[], list=[]) => {
+    console.log(data)
+    for(let k in data) {
+        const node = data[k]
+        const key = node.Key
+        list.push({key, title: node.title})
+        if(node.children) {
+            generateList(node.children, list)
+        }
+    }
+}
 export default function LeftSlideBarReducer(state = initState, action) {
     switch(action.type){
-        case ONEXPAND: {
-            let expandedKeys = action.payload.expandedKeys
-            return {
-                ...state,
-                expandedKeys,
-                autoExpandParent: false
-            }
-        }
+
         case ONSELECT: {
             let selectedKeys = action.payload.selectedKeys
             return {
@@ -154,48 +154,8 @@ export default function LeftSlideBarReducer(state = initState, action) {
                 selectedKeys
             }
         }
-        case ONCHECK: {
-            let checkedKeys = action.payload.checkedKeys
-            return {
-                ...state,
-                checkedKeys
-            }
-        }
-        case ONCOLLAPSE: {
-            return {
-                ...state,
-                collapsed: action.payload.collapsed
-            }
-        }
-        case ONRIGHTCLICK: {
-            let info = action.payload.info
-            return {
-                ...state,
-                selectedKeys:[info.node.props.eventKey],
-                info,
-                cmshow: true,
-            }
-        }
-        case ONCHANGE: {
-            const e = action.payload.e
-            const dataList = action.payload.dataList
-            const value = e.target.value
-            const expandedKeys = dataList.map(
-                (item) => {
-                    if (item.title.indexOf(value) > -1) {
-                        // return getParentKey(item.key, gData);
-                    }
-                    return null;
-                }
-            ).filter((item, i, self) => item && self.indexOf(item) === i)
-            return {
-                ...state,
-                expandedKeys,
-                searchValue: value,
-                autoExpandParent: true
-            }
-        }
         case GET_TAGS_ALL: {
+            console.log('getTaging')
             return {
                 ...state,
                 error: false,
@@ -203,11 +163,15 @@ export default function LeftSlideBarReducer(state = initState, action) {
             }
         }
         case GET_TAGS_ALL_SUCCESS: {
+            let data = action.payload
+            let datalist = []
+            generateList(data, datalist)
             return {
                 ...state,
                 error: false,
                 loading: false,
-                gData: action.payload
+                dataList: datalist,
+                gData: data
             }
         }
         case GET_TAGS_ALL_ERROR: {

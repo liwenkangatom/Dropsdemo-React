@@ -1,29 +1,47 @@
 import {createStore, applyMiddleware} from 'redux'
 
 import eventManageReducers from '../views/EventManageRedux'
+
+function  get(url,params){
+        if (params) {
+            let paramsArray = [];
+            //拼接参数
+            Object.keys(params).forEach(key => paramsArray.push(key + '=' + params[key]))
+            if (url.search(/\?/) === -1) {
+                url += '?' + paramsArray.join('&')
+            } else {
+                url += '&' + paramsArray.join('&')
+            }
+        }
+        //fetch请求
+        return fetch(url,{
+            method: 'GET',
+        })
+    }
 // MIDDLEWARE
 const fetchMiddleware = store => next => action =>{
     if(!action.url || !Array.isArray(action.types)) {
         return next(action)
     }
-    console.log('进入fetch中间件')
     const [LOADING, SUCCESS, ERROR] = action.types
     next({
         type: LOADING,
         loading: true,
         ...action
     })
-    fetch(action.url, {params: action.params})
+    get(action.url, action.params)
     .then(result => {
-        let res = result.json()
+        let res = result.text()
+        console.log(res)
         res.then(
-            value => next({
-            type: SUCCESS,
-            loading: false,
-            payload: value
-        })
+            value => {
+                let data = JSON.parse(value)
+                next({
+                type: SUCCESS,
+                loading: false,
+                payload: data
+            })}
         )
-        
     })
     .catch(err => {
         next({

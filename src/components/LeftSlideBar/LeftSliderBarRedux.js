@@ -58,9 +58,10 @@ export function deletetag(id) {
     }
 }
 export function renametag(id, name){
+    // console.log(id,name)
     return {
         url: api.change_Tag_Id_Param_Url,
-        type: [RENAME_TAG, RENAME_TAG_SUCCESS, RENAME_TAG_ERROR],
+        types: [RENAME_TAG, RENAME_TAG_SUCCESS, RENAME_TAG_ERROR],
         params: {
             id: id,
             name: name
@@ -134,7 +135,7 @@ const initState = {
     loading: true
 }
 const generateList = (data=[], list=[]) => {
-    console.log(data)
+
     for(let k in data) {
         const node = data[k]
         const key = node.Key

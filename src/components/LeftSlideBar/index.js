@@ -17,6 +17,7 @@ import { Search,
          Menu,
          MenuItem
 } from './style';
+const SearchInput = Input.Search
 const TreeNode = Tree.TreeNode;
 const { Sider } = Layout;
 const gData = [{
@@ -99,7 +100,9 @@ class LeftSlideBar extends Component {
       menux: 0,
       menuy: 0,
       autoExpandParent: true,
-      inputvisible: false
+      inputvisible: false,
+      editValue: 'editva',
+      inputState: 0
     }
   }
   onExpand = (expandedKeys) => {
@@ -129,13 +132,8 @@ class LeftSlideBar extends Component {
     let menux = info.event.pageX-999
     let menuy = info.event.pageY
     let selectedKey = info.node.props.eventKey
-    this.setState({ selectedKey: selectedKey,
-    menux,
-  menuy}, ()=>{
-    this.renderCm()
-  })
-
-
+    this.setState({ selectedKey: selectedKey,menux,menuy}) 
+    this.renderCm(info)
     console.log(this.state )
   }
 
@@ -156,7 +154,7 @@ class LeftSlideBar extends Component {
   }
 
   handleAddTag = (info) => {
-    console.log(info)
+    this.setState({inputState:1},this.showedit)
     // this.renderinput(info)
     // this.props.addTag('testTag', this.state.selectedKey)
     // this.props.initTag()
@@ -164,9 +162,9 @@ class LeftSlideBar extends Component {
   }
 
   handleRename = (info) => {
-    this.setState({inputvisible: true}, ()=>{
-      this.renderCm(info)
-    })
+    this.setState({
+      inputState: 2
+    },this.showedit)
     console.log(info);
   }
 
@@ -191,6 +189,49 @@ componentWillMount() {
       document.body.removeChild(this.cmContainer);
       this.cmContainer = null;
     }
+  }
+   showedit= ()=>  {
+    console.log(this)
+    let state = !this.state.inputvisible
+    this.setState({inputvisible: state})
+    console.log(this.state)
+  }
+  hideedit() {
+    this.setState({inputvisible: false})
+  }
+  addRootTag=()=> {
+    this.setState({inputState: 3},this.showedit)
+    
+  }
+  addBranchTag() {
+    this.setState({inputState: 1},this.showedit)
+    
+  }
+  renameBranchTag() {
+    this.setState({inputState: 2},this.showedit)
+    
+  }
+  inputaction=(value)=> {
+    console.log(this.state)
+    const state = this.state.inputState
+    let id = this.state.selectedKey
+    console.log(id)
+    console.log(value)
+    console.log(state)
+
+    if(state === 1) {
+       console.log("addroot")
+        this.props.addTag(value, id)
+    }else if(state === 2){
+      console.log('youcan')
+        this.props.renameTag(id, value)
+    }else if(state===3){
+      console.log('addtag')
+        this.props.addTag(value, 0)
+    }
+    this.setState({inputvisible: false,
+    editValue:'edit'},this.props.initTag)
+    
   }
 
   getContainer() {
@@ -230,7 +271,6 @@ componentWillMount() {
       ReactDOM.unmountComponentAtNode(this.cmContainer);
       this.menu = null;
     }
-    const visible=this.state.inputvisible?{'display':'block'}:{'display':'none'}
     this.menu = (
       <Tooltip
         trigger="click" 
@@ -239,7 +279,6 @@ componentWillMount() {
 
         title={
             <Menu>
-            <Input style={visible}></Input>
             <MenuItem onClick={this.handleDelete}>Delete</MenuItem>
             <MenuItem onClick={this.handleRename}>Rename</MenuItem>
             <MenuItem onClick={this.handleAddTag}>Add a tag</MenuItem>
@@ -251,11 +290,11 @@ componentWillMount() {
     );
 
     const container = this.getContainer();
-    // const theleft = info.event.pageX -999;
+    const theleft = info.event.pageX -999;
     Object.assign(this.cmContainer.style, {
       position: 'absolute',
-      left: `${this.state.menux}px`,
-      top: `${this.state.menuy}px`,
+      left: `${theleft}px`,
+      top: `${info.event.pageY}px`,
     });
 
     ReactDOM.render(this.menu, container);
@@ -284,7 +323,7 @@ componentWillMount() {
       }
       return <TreeNode key={item.key} title={title} />;
     });
-
+      let inputstyle = this.state.inputvisible?{"display": "block"}:{"display": "none"}
     return (
       <Layout style={{ minHeight: '100vh' }}>   
         <Sider
@@ -309,10 +348,20 @@ componentWillMount() {
           </SearchWrapper>  
           <Tags>
               <Text>Tags</Text>
-              <Add>
-                <Icon type="plus" />
+              <div onClick={this.addRootTag}>
+              <Add >
+                <Icon type="plus"/>
               </Add>
+              </div>
+              
           </Tags>
+          <SearchInput 
+          style = {inputstyle} 
+          size='small' 
+          placeholder={this.state.editValue}
+          enterButton='Enter' 
+          onSearch={this.inputaction}
+          ></SearchInput>
            <Tree
             checkable
             onRightClick={this.onRightClick}

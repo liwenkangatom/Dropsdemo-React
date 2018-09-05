@@ -13,6 +13,7 @@ function  get(url,params){
                 url += '&' + paramsArray.join('&')
             }
         }
+        console.log(url)
         //fetch请求
         return fetch(url,{
             method: 'GET',

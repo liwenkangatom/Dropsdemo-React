@@ -10,12 +10,14 @@ import {
   ContentWrapper,
   Content,
   ContentTitle
-} from '../style'
+} from '../style';
+
+import {connect } from 'react-redux'
 
 class ModalWrapper extends Component {
-    
+
     render() {
-        const { commit, visible, handleCancel, handleOk, loading, name } = this.props;
+        const { visible, handleCancel, handleOk, loading, handleDelete } = this.props;
         // console.log(name) 
         return(
             <Fragment>
@@ -23,7 +25,7 @@ class ModalWrapper extends Component {
 					visible={visible}
 					width='529px'
 					style={{height:'558px'}}
-                        title={<Title>Add Event</Title>}
+                        title={<Title>{this.props.subject}</Title>}
                         onOk={handleOk}
                         onCancel={handleCancel}
                         destroyOnClose={true}
@@ -31,6 +33,7 @@ class ModalWrapper extends Component {
                             <Button
                                 key="delete"
                                 type='danger'
+                                onClick={handleDelete}
                                 style={{
                                     position:'absolute',
                                     left:29,
@@ -84,17 +87,17 @@ class ModalWrapper extends Component {
 
                             <Content>
                             <ContentTitle>Time</ContentTitle>
-                            <Time time={commit.date}/>
+                            <Time />
                             </Content>
 
                             <Content>
                             <ContentTitle>Subject</ContentTitle>
-                            <Subject subject={commit.subject}/>
+                            <Subject />
                             </Content>
 
                             <Content>
                             <ContentTitle>Content</ContentTitle>
-                            <ContentText content={commit.content} />
+                            <ContentText />
                             </Content>
                         </ContentWrapper>
 
@@ -104,4 +107,11 @@ class ModalWrapper extends Component {
     }
 }
 
-export default ModalWrapper;
+function  mapStateToProps(state) {
+    return {
+        subject: state.event.showcommit.subject,
+
+    }
+}
+
+export default connect(mapStateToProps, null)(ModalWrapper);

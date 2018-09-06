@@ -12,6 +12,10 @@ import {
   ContentTitle
 } from './style'
 
+import * as actions from '../Drops/DropsRedux'
+import {bindActionCreators } from 'redux'
+import {connect } from 'react-redux'
+
 class AddEvent extends Component {
 
 	constructor(props){
@@ -29,10 +33,20 @@ class AddEvent extends Component {
   }
 
   handleOk = () => {
-    this.setState({ loading: true });
-    setTimeout(() => {
-      this.setState({ loading: false, visible: false });
-    }, 3000);
+    if (this.props.addtags.length > 0 && this.props.addcommit.date !== '' ){
+      this.setState({ loading: true });
+      setTimeout(() => {
+        this.setState({ loading: false, visible: false });
+      }, 3000);
+
+      this.props.addtags.forEach( key =>{
+        this.props.addEventAction(key, this.props.addcommit)
+      })
+      
+      this.props.reAddCommit()
+    } else {
+      console.log("meixie")
+    }
   }
 
   handleCancel = () => {
@@ -47,7 +61,11 @@ class AddEvent extends Component {
 				<Button 
 					type="primary" 
 					onClick={this.showModal}
-					style={{background: "rgb(255,144,62)",border:"rgb(255,144,62)"}}
+					style={{
+            background: "rgb(255,144,62)",
+            border:"rgb(255,144,62)",
+            float:"right"
+          }}
 				>
 					<Icon type="plus" /> AddEvent
 				</Button>
@@ -121,4 +139,17 @@ class AddEvent extends Component {
   }
 }
 
-export default AddEvent;
+function  mapStateToProps(state) {
+  return {
+    addtags: state.event.addtags,
+    addcommit: state.event.addcommit
+  }
+}
+function mapDispatchToProps(Dispatch) {
+  return {
+    addEventAction: bindActionCreators(actions.addEventAction,Dispatch),
+    reAddCommit: bindActionCreators(actions.reAddCommit,Dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddEvent);

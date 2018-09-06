@@ -78,6 +78,7 @@ export function renametag(id, name){
 //     }
 // }
 export function onSelect(selectedKeys, info) {
+    console.log('reducer',selectedKeys)
     return {
         type: ONSELECT,
         payload: {
@@ -124,7 +125,7 @@ export function onSelect(selectedKeys, info) {
 // REDUCERS
 const initState = {
 
-    checkedKeys: [],
+    selectedKeys: [],
 
     gData:[],
     dataList: [],
@@ -150,6 +151,7 @@ export default function LeftSlideBarReducer(state = initState, action) {
 
         case ONSELECT: {
             let selectedKeys = action.payload.selectedKeys
+            console.log(selectedKeys)
             return {
                 ...state,
                 selectedKeys

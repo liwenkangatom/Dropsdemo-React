@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import './style.css';
-import { humanizeDate } from '../utils'
+import { humanizeDate } from '../utils';
+
+import {connect } from 'react-redux';
 class Tooltips extends Component {
 
   render() {
-    const { commit } = this.props; 
+    const { showcommit } = this.props; 
     return (
       
       <div className='tooltip'>
         <div className="commit">
             <div className="content">
-                <p>{commit.subject}</p>
-                <p>{humanizeDate(new Date(commit.date))}</p>
+                <p>{showcommit.subject}</p>
+                <p>{humanizeDate(new Date(showcommit.date))}</p>
             </div>
         </div>
       </div>
@@ -19,4 +21,10 @@ class Tooltips extends Component {
   }
 }
 
-export default Tooltips;
+function  mapStateToProps(state) {
+  return {
+      showcommit: state.event.showcommit,
+  }
+}
+
+export default connect(mapStateToProps, null)(Tooltips);

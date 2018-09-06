@@ -120,7 +120,8 @@ class LeftSlideBar extends Component {
   }
 
   onCheck = (checkedKeys, info) => {
-    console.log(info);
+    console.log(checkedKeys);
+    this.props.onSelect(checkedKeys.checked, info)
   }
 
   onCollapse = (collapsed) => {
@@ -316,7 +317,8 @@ componentWillMount() {
       ) : <span>{item.title}</span>;
       if (item.children) {
         return (
-          <TreeNode key={item.key} title={title}>
+          <TreeNode key={item.key} title={(this.state.renamekey)?<Input />:item.title}>
+            {/* <TreeNode style={(this.state.addkey)?{'diplay':'block'}:{'display':'none'}}  */}
             {loop(item.children)}
           </TreeNode>
         );
@@ -364,6 +366,7 @@ componentWillMount() {
           ></SearchInput>
            <Tree
             checkable
+            checkStrictly={true}
             onRightClick={this.onRightClick}
             expandedKeys={expandedKeys}
             autoExpandParent={autoExpandParent}

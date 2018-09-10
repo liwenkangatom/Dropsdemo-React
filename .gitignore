@@ -1,14 +1,14 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
-
+/.svn
+/.git
 # dependencies
 /node_modules
 
-# testing
+# testin
 /coverage
 
 # production
 /build
-
 # misc
 .DS_Store
 .env.local

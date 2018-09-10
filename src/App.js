@@ -1,19 +1,26 @@
+
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Dropsdemo from './Test'
+import {Provider} from 'react-redux'
+
+import Header from './components/Header';
+import LeftSlideBar from './components/LeftSlideBar'
+import Manage from './views/EventManage'
+import { store } from './redux/reduxconfigure'
+// import Tree from './components/Test/Test'
+
+
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-    <header className="App-header">
-          <h1 className="App-title">Dropsdemo-React</h1>
-        </header>
-        <Dropsdemo />
+      <Provider store={store}>
+      <div>
+        <Header/>
+        <LeftSlideBar/>
       </div>
+      </Provider>
+      // <Tree></Tree>
     );
   }
 }
-
 export default App;

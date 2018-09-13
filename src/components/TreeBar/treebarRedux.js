@@ -1,5 +1,3 @@
-// API
-
 import api from '../../api'
 
 
@@ -125,7 +123,9 @@ export function onSelect(selectedKeys, info) {
 // REDUCERS
 const initState = {
 
-    selectedKeys: [],
+    selectedKeys: [
+        '0'
+    ],
 
     gData:[],
     dataList: [],

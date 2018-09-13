@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import './style.css';
-import { humanizeDate } from '../utils';
-
+import { humanizeDate } from '../../Common/utils';
 import {connect } from 'react-redux';
+
 class Tooltips extends Component {
 
   render() {
     const { showcommit } = this.props; 
-    return (
-      
+    return (    
       <div className='tooltip'>
         <div className="commit">
             <div className="content">
@@ -23,7 +22,7 @@ class Tooltips extends Component {
 
 function  mapStateToProps(state) {
   return {
-      showcommit: state.event.showcommit,
+      showcommit: state.home.event.showcommit,
   }
 }
 

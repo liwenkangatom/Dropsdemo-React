@@ -1,5 +1,4 @@
 
-
 // Example display: September 4 1986 8:30 PM
 export const humanizeDate = (date) => {
     const monthNames = [
@@ -26,12 +25,11 @@ export const humanizeDate = (date) => {
         hours = "0" + hours;
     }
 
-    return `
-        ${monthNames[date.getMonth()]} ${date.getDate()} ${date.getFullYear()}
-        ${hours}:${minutes}
-    `;
+    return `${monthNames[date.getMonth()]} ${date.getDate()} ${date.getFullYear()} ${hours}:${minutes}`;
 };
 
+
+// Example display: 2005-01-01 00:00:00
 export const transDate = (date) => {
     const monthNames = [
         '01',
@@ -64,3 +62,15 @@ export const transDate = (date) => {
         ${hours}:${minutes}:${seconds}
     `
 }
+
+//[{key1,title1},{key2,title2}]
+export const generateList = (data,dataList) => {
+    for (let i = 0; i < data.length; i++) {
+      const node = data[i];
+      const key = node.key;
+      dataList.push({ key, title: node.title });
+      if (node.children) {
+        generateList(node.children, dataList);
+      }
+    }
+  };

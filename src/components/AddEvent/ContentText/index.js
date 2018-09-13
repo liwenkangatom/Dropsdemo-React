@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
 import { Input } from 'antd';
-
-import * as actions from '../../Drops/DropsRedux'
-import {bindActionCreators } from 'redux'
-import {connect } from 'react-redux'
-
+import * as actions from '../../Drops/DropsRedux';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { ConetentTextWrapper } from './style'
 const { TextArea } = Input;
 class ContentText extends Component {
 
@@ -16,18 +15,21 @@ class ContentText extends Component {
 
     render(){
         return(
-            <span style={{position:'absolute'}}>
-                <TextArea 
+            <ConetentTextWrapper >
+                <TextArea
                     style={{
-                        height:170,
-                        width:397,
-                        marginLeft:22,
+                        position:'absolute',
+                        height:136,
+                        width:436,
+                        marginLeft:16,
+                        marginTop:16,
                         resize:'none',
-                    }} 
-                    placeholder="Please Input" 
+                        background:'#f8fafb',
+                    }}
+                    className="scroll"
                     onChange={this.onChange}
                  />
-            </span>
+            </ConetentTextWrapper>
         )
     }
 }

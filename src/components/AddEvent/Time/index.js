@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
 import { DatePicker } from 'antd';
-import * as actions from '../../Drops/DropsRedux'
-import {bindActionCreators } from 'redux'
-import {connect } from 'react-redux'
+import * as actions from '../../Drops/DropsRedux';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { TimeWrapper } from './style'
 
 class Time extends Component {
 
@@ -25,19 +26,24 @@ class Time extends Component {
       }
 
     render(){
-        
+
         return(
-            <span>
+            <TimeWrapper>
                  <DatePicker
                     showTime
-                   
+                    className="data"
                     format="YYYY-MM-DD HH:mm:ss"
-                    placeholder="Select Time"
-                    style={{width:397,marginLeft:22}}
+                    placeholder="Time"
+                    style={{
+                      width:210,
+                      height:32,
+                      marginLeft:16,
+                      borderRadius: 4,
+                    }}
                     onChange={this.onChange}
                     onOk={this.onOk}
                 />
-            </span>
+            </TimeWrapper>
         )
     }
 }

@@ -4,25 +4,36 @@ import TagS from './TagS';
 import Time from './Time';
 import Subject from './Subject';
 import ContentText from './ContentText';
-import { Button, Modal, Icon } from 'antd';
+import { Button, Modal, Icon, Pagination } from 'antd';
 import { 
   Title, 
   ContentWrapper,
   Content,
-  ContentTitle
+  ContentTitle,
+  EventWrapper,
+  AddWrapper,
+  Close,
+  ButtonWrapper,
+  ButtonWrapperBack,
 } from './style'
 
-import * as actions from '../Drops/DropsRedux'
-import {bindActionCreators } from 'redux'
-import {connect } from 'react-redux'
+import * as actions from '../Drops/DropsRedux';
+import {bindActionCreators } from 'redux';
+import {connect } from 'react-redux';
+
+
 
 class AddEvent extends Component {
 
 	constructor(props){
 		super(props);
 		this.state = {
+      count:0,
+      total: [0],
+      selectpage:1,
 			loading: false,
-			visible: false
+      visible: false,
+      confirm: false,
 		}
 	}
 
@@ -33,30 +44,80 @@ class AddEvent extends Component {
   }
 
   handleOk = () => {
-    if (this.props.addtags.length > 0 && this.props.addcommit.date !== '' ){
+    if (this.props.addtags.length){
       this.setState({ loading: true });
       setTimeout(() => {
-        this.setState({ loading: false, visible: false });
+        this.setState({ loading: false, confirm: true, visible: false});
       }, 3000);
-
-      this.props.addtags.forEach( key =>{
-        this.props.addEventAction(key, this.props.addcommit)
+      const total = this.state.total;
+      const addcommits = [];
+      total.forEach(item => {
+        addcommits.push(this.props.addcommits[item])
       })
       
-      this.props.reAddCommit()
+      this.props.addtags.forEach( key =>{
+        this.props.addEventAction(key, addcommits)
+      })
+      
+      this.props.reAddCommits()
     } else {
       console.log("meixie")
     }
   }
 
   handleCancel = () => {
-    this.setState({ visible: false });
+    this.setState({ 
+      visible: false,
+      confirm: false, 
+      count: 0,
+      total: [0],
+      selectpage:1,
+    });
+    this.props.reAddCommits()
+  }
+
+  addTotal = () => {
+    const total = this.state.total;
+    let count = this.state.count;
+    count = count + 1;
+    total.push(count)
+    this.setState({
+      total,
+      count
+    })
+    this.props.addAddCommits();
+  }
+
+  paginationChange = (pagNumber) => {
+    const total = this.state.total;
+    this.setState({
+      selectpage: pagNumber,
+    })
+    this.props.getEventIndex(total[pagNumber-1]);
+  }
+
+  deleteItem = (item,index) => {
+    let selectpage = this.state.selectpage;
+    const total = this.state.total;
+    if(index === total.length-1){
+      selectpage = selectpage - 1;
+    }
+    this.props.getEventIndex(total[selectpage-1]);
+    console.log("2:",selectpage)
+    total.forEach((item2,index) => {
+      if(item === item2){
+        total.splice(index,1);
+      }
+    })
+    this.setState({
+      total,
+      selectpage,
+    })
   }
 
   render() {
-		const { visible, loading } = this.state;
+		const { visible, loading, total, selectpage, confirm } = this.state;
     return ( 
-      
 			<div>
 				<Button 
 					type="primary" 
@@ -73,28 +134,38 @@ class AddEvent extends Component {
         <Modal
 					visible={visible}
 					width='529px'
-					style={{height:'558px'}}
+          bodyStyle={{background: '#f8fafb',paddingTop:0,paddingBottom:0}}
           title={<Title>Add Event</Title>}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           destroyOnClose={true}
           footer={[
+            <ButtonWrapper key='submitt'>
             <Button 
               key="submit" 
               type="primary" 
               loading={loading}
               onClick={this.handleOk}
-              style={{
+              style={confirm ? {
+                width: 114,
+                height: 36,
+                backgroundColor: '#f76d30',
+                border:'0px',
+                boxShadow: '0px 4px 10px 0px rgba(255, 144, 61, 0.48)',
+                borderRadius: 6,
+              } : {
                 width: 114,
                 height: 36,
                 backgroundColor: '#ff903d',
-                border:'#ff903d',
+                border:'0px',
                 boxShadow: '0px 4px 10px 0px rgba(255, 144, 61, 0.48)',
                 borderRadius: 6,
               }}
             >
-              Add Event
-            </Button>,
+              Confirm
+            </Button>
+            </ButtonWrapper>,
+            <ButtonWrapperBack key="backk"> 
             <Button 
               key="back" 
               onClick={this.handleCancel}
@@ -107,8 +178,11 @@ class AddEvent extends Component {
                 color: '#7c7c7c'
               }}
             >
-              Return
-            </Button>,
+              Cancel
+            </Button>
+            </ButtonWrapperBack>
+            ,
+
           ]}
         >
           <ContentWrapper>
@@ -118,19 +192,59 @@ class AddEvent extends Component {
             </Content>
 
             <Content>
-              <ContentTitle>Time</ContentTitle>
-              <Time/>
+              <ContentTitle>
+                Event
+                <Pagination
+ 
+                  defaultPageSize={1}
+                  total={total.length}
+                  current={selectpage}
+                  size="small"
+                  onChange={this.paginationChange}
+                  style={{
+                    position:"absolute",
+                    right:55,
+                    top:5
+                  }} 
+                />
+                <AddWrapper onClick={this.addTotal}>
+                  <Icon 
+                    type="plus"
+                    style={{
+                      fontSize:16,
+                      color:'#f58220'
+                    }} 
+                  />
+               </AddWrapper>
+              </ContentTitle>
             </Content>
 
-            <Content>
-              <ContentTitle>Subject</ContentTitle>
-              <Subject/>
-            </Content>
-
-            <Content>
-              <ContentTitle>Content</ContentTitle>
-              <ContentText/>
-            </Content>
+            {
+              total.map((item,index) => {
+                if(index + 1  !== parseInt(selectpage, 10)){
+                  return(
+                    <EventWrapper key={item} style={{display:'none'}}>
+                      <Close  onClick={this.deleteItem.bind(this,item,index)}/>
+                      <Subject/>
+                      <Time/>
+                      <ContentText/>
+                    </EventWrapper>   
+                  )
+                }else{
+                  return(
+                    <EventWrapper key={item}>
+                      <Close
+                        onClick={this.deleteItem.bind(this,item,index)}
+                        style={total.length === 1 ? {display:'none'} : {display:'block'}}
+                      />
+                      <Subject/>
+                      <Time/>
+                      <ContentText/>
+                    </EventWrapper>  
+                  )
+                }
+              })
+            }
           </ContentWrapper>
 
         </Modal>
@@ -141,14 +255,16 @@ class AddEvent extends Component {
 
 function  mapStateToProps(state) {
   return {
-    addtags: state.event.addtags,
-    addcommit: state.event.addcommit
+    addtags: state.home.event.addtags,
+    addcommits: state.home.event.addcommits
   }
 }
 function mapDispatchToProps(Dispatch) {
   return {
     addEventAction: bindActionCreators(actions.addEventAction,Dispatch),
-    reAddCommit: bindActionCreators(actions.reAddCommit,Dispatch),
+    reAddCommits: bindActionCreators(actions.reAddCommits,Dispatch),
+    getEventIndex: bindActionCreators(actions.getEventIndex,Dispatch),
+    addAddCommits: bindActionCreators(actions.addAddCommits,Dispatch),
   }
 }
 

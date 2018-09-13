@@ -20,7 +20,13 @@ class Subject extends Component {
         return(
             <span>
                 <Input
-                    style={{width:397,marginLeft:22}} 
+                    style={{
+                        width:210,
+                        height:32,
+                        marginLeft:16,
+                        background: '#f8fafb',
+                        borderRadius: 4,
+                    }} 
                     placeholder="Please Input" 
                     defaultValue={this.props.subject}
                     onChange = {this.onChange}
@@ -32,8 +38,8 @@ class Subject extends Component {
 
 function  mapStateToProps(state) {
     return {
-        subject: state.event.showcommit.subject,
-        eventkey: state.event.showcommit.key
+        subject: state.home.event.showcommit.subject,
+        eventkey: state.home.event.showcommit.key
     }
 }
 function mapDispatchToProps(Dispatch) {

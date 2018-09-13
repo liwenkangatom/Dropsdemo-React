@@ -1,11 +1,21 @@
-import React, {Component, Fragment} from 'react'
-import eventDrops from 'event-drops'
-import * as d3 from 'd3'
+import React, {Component, Fragment} from 'react';
+import eventDrops from 'event-drops';
+import * as d3 from 'd3';
 import Tooltips from './ToolTips/Tooltips';
-import ModalWrapper from './ModalWrapper'
-import * as actions from './DropsRedux'
-import {bindActionCreators } from 'redux'
-import {connect } from 'react-redux'
+import ModalWrapper from './ModalWrapper';
+import * as actions from './DropsRedux';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { generateList, humanizeDate } from '../Common/utils';
+import { DisplayWrapper, Number, Text, EventDrops } from './style';
+import { Icon } from 'antd';
+let tooltip;
+let drop;
+let chart;
+let zoom;
+let numberCommitsContainer;
+let zoomStart;
+let zoomEnd;
 
 // 行颜色
 let line = {
@@ -19,10 +29,9 @@ let line = {
          }
     }
 };
-
+//获取所选标签下的所有事件
 const getshowdata = (selectedKeys, eventtag, data, gdata) =>{
     let showdata =[];
-
     selectedKeys.forEach((key) => {
         let showdateitem = {
             name:'',
@@ -47,24 +56,13 @@ const getshowdata = (selectedKeys, eventtag, data, gdata) =>{
     })
     return showdata;
 }
-/* 
-const getshowdata = (selectedKeys, data) =>{
-    let showdata =[];
-    selectedKeys.forEach((key) => {
-        data.forEach((item) => {
-            if(item.key === key){
-                showdata.push(item);
-            }
-        })
-    })
-    return showdata;
-}
- */
+
 const demoStyle = {
-    width: '80%',
+    width: '65%',
     position: 'absolute',
-    marginTop: '64px',
+    margin: '64px auto'
 }
+
 class Drops extends Component {
     constructor(props) {
         super(props);
@@ -75,38 +73,75 @@ class Drops extends Component {
                 date:''
             },
             loading: false,
-			visible: false
+            visible: false,
         }
     }
 
+    updateCommitsInformation = chart => {
+        const filteredData = chart
+            .filteredData()
+            .reduce((total, repo) => total.concat(repo.data), []);
+
+        numberCommitsContainer.innerText = filteredData.length;
+        zoomStart.innerText = humanizeDate(chart.scale().domain()[0]);
+        zoomEnd.innerText = humanizeDate(chart.scale().domain()[1]);
+    };
+    
 
     //事件展示
     show = () =>{
-
         let dataList = [];
-        const generateList = (data) => {
-          for (let i = 0; i < data.length; i++) {
-            const node = data[i];
-            const key = node.key;
-            dataList.push({ key, title: node.title });
-            if (node.children) {
-              generateList(node.children, node.key);
-            }
-          }
-        };
-
-        generateList(this.props.gdata);
-
+        generateList(this.props.gdata, dataList);
         const repositories = getshowdata(this.props.selectedKeys, this.props.eventtag, this.props.data, dataList );
-        const tooltip = d3
-        .select('.tooltip')
-    
         const repositoriesData = repositories.map(repository => ({
-        name: repository.name,
-        data: repository.commits,
+            name: repository.name,
+            data: repository.commits,
         }));
+        //自定义箭头,String类型
+        // const indicator = {
+        //     previousText: (<Icon type="caret-left" theme="outlined" />),
+        //     nextText: "◀"
+        // }
+
+        let  d2 = {d3,drop,line,zoom}
+        chart = eventDrops(d2);
+        d3
+        .select('#eventdrops-demo')
+        .data([repositoriesData])
+        .call(chart);
+        this.updateCommitsInformation(chart)
+    }
+
+
+    handleOk = () => {
+        if(this.props.showtags.length > 0){
+            this.setState({ loading: true });
+            this.props.changeCommit(this.props.changecommit,this.props.showtags); 
+            setTimeout(() => {
+            this.setState({ loading: false, visible: false });
+            }, 3000);
+        }  
+    }
+
     
-        let drop ={
+    handleCancel = () => {
+        this.setState({ visible: false });
+    }
+
+
+    handleDelete = () => {
+        this.props.deleteEvent(this.props.changecommit.key);
+        this.setState({ visible: false });
+    }
+
+
+    componentDidUpdate() {
+        this.show();
+    }
+
+    componentDidMount(){
+        tooltip = d3.select('.tooltip');
+        drop ={
             date: d => new Date(d.date),
             onClick: () => {
                 tooltip
@@ -116,7 +151,7 @@ class Drops extends Component {
                     .style('pointer-events', 'none');
                 this.setState({
                     visible: true,
-                    });
+                });
             },
 
             onMouseOver: commit =>{
@@ -126,7 +161,7 @@ class Drops extends Component {
                     .style('opacity', 1) 
                     .style('pointer-events', 'auto')
         
-                 this.props.getShowCommit(commit);
+                this.props.getShowCommit(commit);
         
                 tooltip
                     .style('left', `${d3.event.pageX - 30}px`)
@@ -139,60 +174,34 @@ class Drops extends Component {
                     .duration(500)
                     .style('opacity', 0)
                     .style('pointer-events', 'none');
-            },
-        
-            
-    
+            }
         }
+        zoom = {
+            onZoomEnd: () => this.updateCommitsInformation(chart),
+        };
 
-
-        let range = {
-            start: {},
-            end: {}
-        }
-    
-        let d2 = {d3,drop,line};
-        const chart = eventDrops(d2);
-    
-        d3
-        .select('#eventdrops-demo')
-        .data([repositoriesData])
-        .call(chart);
-        console.log("de",chart)
-    }
-
-
-    handleOk = () => {
-        if(this.props.showtags.length > 0){
-            this.setState({ loading: true });
-            this.props.changeCommit(this.props.changecommit,this.props.showtags); 
-            setTimeout(() => {
-            this.setState({ loading: false, visible: false });
-            }, 3000);
-        }  
-      }
-    
-    handleCancel = () => {
-        this.setState({ visible: false });
-    }
-
-    handleDelete = () => {
-        
-        this.props.deleteEvent(this.props.changecommit.key);
-        this.setState({ visible: false });
-    }
-
-
-    componentDidUpdate(){
-        this.show();
+        numberCommitsContainer = document.getElementById('numberCommits');
+        zoomStart = document.getElementById('zoomStart');
+        zoomEnd = document.getElementById('zoomEnd');
     }
 
     render() {
         const { visible, loading, commit } = this.state;
         return (
             <Fragment>
-                <div className='drops' id='eventdrops-demo' style={demoStyle}>
-                </div>
+                <DisplayWrapper>
+                    <div>
+                        <Number id="numberCommits"></Number>
+                        <Text className="deep"> events</Text>
+                        <Text className="shallow"> found between</Text>
+                    </div>
+                    <div>
+                        <Text className="deep" id="zoomStart"></Text>
+                        <Text className="shallow"> and </Text>
+                        <Text className="deep" id="zoomEnd"></Text>
+                    </div>
+                </DisplayWrapper>
+                <EventDrops className='drops' id='eventdrops-demo' style={demoStyle}></EventDrops>
                 <Tooltips />
                 <ModalWrapper 
                     visible={visible} 
@@ -202,7 +211,6 @@ class Drops extends Component {
                     handleDelete={this.handleDelete}
                     commit={commit}
                 />
-
             </Fragment> 
         )
     }
@@ -210,19 +218,19 @@ class Drops extends Component {
 
 function  mapStateToProps(state) {
     return {
-        selectedKeys: state.tag.selectedKeys,
-        data: state.event.data,
-        eventtag: state.event.eventtag,
-        gdata: state.tag.gData,
-        changecommit: state.event.changecommit,
-        showtags: state.event.showtags
+        selectedKeys: state.home.treebar.selectedKeys,
+        data: state.home.event.data,
+        eventtag: state.home.event.eventtag,
+        gdata: state.home.treebar.gData,
+        changecommit: state.home.event.changecommit,
+        showtags: state.home.event.showtags,
     }
 }
 function mapDispatchToProps(Dispatch) {
     return {
         getShowCommit: bindActionCreators(actions.getShowCommit,Dispatch),
         changeCommit: bindActionCreators(actions.changeCommit,Dispatch),
-        deleteEvent: bindActionCreators(actions.deleteEvent,Dispatch)
+        deleteEvent: bindActionCreators(actions.deleteEvent,Dispatch),
     }
 }
 

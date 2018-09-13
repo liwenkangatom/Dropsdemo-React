@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
 import { Input } from 'antd';
-
-import * as actions from '../../Drops/DropsRedux'
-import {bindActionCreators } from 'redux'
-import {connect } from 'react-redux'
+import * as actions from '../../Drops/DropsRedux';
+import {bindActionCreators } from 'redux';
+import {connect } from 'react-redux';
 
 
 class Subject extends Component {
@@ -12,7 +11,7 @@ class Subject extends Component {
 
     onChange = (e) =>{
         const value = e.target.value;
-        const key = value + this.props.date
+        const key = new Date().getTime(); 
 		this.props.getAddEventSubject(value, key);
     }
 
@@ -20,8 +19,14 @@ class Subject extends Component {
         return(
             <span>
                 <Input
-                    style={{width:397,marginLeft:22}} 
-                    placeholder="Please Input" 
+                    style={{
+                        width:210,
+                        height:32,
+                        marginLeft:16,
+                        background: '#f8fafb',
+                        borderRadius: 4,
+                    }} 
+                    placeholder="Subject" 
                     onChange = {this.onChange}
                 />
             </span>
@@ -29,11 +34,6 @@ class Subject extends Component {
     }
 }
 
-function  mapStateToProps(state) {
-    return {
-      date: state.event.addcommit.date,
-    }
-  }
 
   function mapDispatchToProps(Dispatch) {
     return {
@@ -41,4 +41,4 @@ function  mapStateToProps(state) {
     }
   }
   
-  export default connect(mapStateToProps, mapDispatchToProps)(Subject);
+  export default connect(null, mapDispatchToProps)(Subject);

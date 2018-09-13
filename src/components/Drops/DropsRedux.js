@@ -30,6 +30,9 @@ const GET_CHANGE_SUBJECT = 'GET_CHANGE_SUBJECT'
 const GET_CHANGE_CONTENT = 'GET_CHANGE_CONTENT'
 const GET_CHANGE_KEY = 'GET_CHANGE_KEY'
 
+const GET_EVENTINDEX = 'GET_EVENTINDEX'
+const ADD_ADDCOMMITS = 'ADD_ADDCOMMITS'
+
 // ACTION CREATOR
 export const getInitEventRedux = (gData,data,eventtag) =>{ 
     return{
@@ -63,7 +66,7 @@ export const getAddEventTime = (time) => {
 export const getAddEventSubject = (subject,key) => {
     return {
         type: GET_ADD_SUBJECT,
-        param: {
+        params: {
             subject,
             key
         }
@@ -79,17 +82,17 @@ export const getAddEventContent = (content) => {
     }
 }
 
-export const addEventAction = (tagkey, commit) => {
+export const addEventAction = (tagkey, commits) => {
     return {
         type: ADD_EVENT_SUCCESS,
         params: {
             tagkey,
-            commit
+            commits
         }
     }
 } 
 
-export const reAddCommit = () => {
+export const reAddCommits = () => {
     return {
         type: READDCOMMIT,
     }
@@ -167,6 +170,24 @@ export const deleteEvent = (eventkey) => {
         }
     }
 }
+
+
+export const getEventIndex = (eventindex) => {
+    return {
+        type: GET_EVENTINDEX,
+        param: {
+            eventindex
+        }
+    }
+}
+
+export const addAddCommits = () => {
+    return {
+        type: ADD_ADDCOMMITS,
+    }
+}
+
+
 /* 
 
 export const getInitEventRedux = (gData,data) =>{ 
@@ -218,13 +239,14 @@ const initState = {
     gData: [],
     data: [],
     eventtag: [],
-    addtags:[],  
-    addcommit:{
+    addtags:[],
+    addcommits:[{
         key:'',
         subject:'',
         content:'',
         date:'',
-    }, 
+    }],
+    eventindex: 0,
     selectedKeys: ["0","0-1","0-2"],
     showcommit:{
         key:'',
@@ -247,16 +269,19 @@ export default function EventReducer(state = initState, action) {
         case ADD_EVENT_SUCCESS: {
             const newState = JSON.parse(JSON.stringify(state));
             const tagkey = action.params.tagkey;
-            const commit = action.params.commit;
-            const eventtagitem = {
-                key: tagkey + commit.key,
-                eventkey: commit.key,
-                tagkey: tagkey,
-            }
-            newState.eventtag.push(eventtagitem);
-            if(newState.data.every(item => JSON.stringify(item) !== JSON.stringify(commit))){
+            const commits = action.params.commits;
+            commits.forEach(commit => {
+                const eventtagitem = {
+                    key: tagkey + commit.key,
+                    eventkey: commit.key,
+                    tagkey: tagkey,
+                }
+                newState.eventtag.push(eventtagitem);
+            })
+
+            commits.forEach(commit => {
                 newState.data.push(commit);
-            }
+            })
             return newState;
         }
 
@@ -312,7 +337,8 @@ export default function EventReducer(state = initState, action) {
 
         case GET_ADD_TIME: {
             const newState = JSON.parse(JSON.stringify(state));
-            newState.addcommit.date = action.param.time;
+            const { addcommits, eventindex } = newState;
+            addcommits[eventindex].date = action.param.time
             return newState;
         }
 
@@ -324,8 +350,10 @@ export default function EventReducer(state = initState, action) {
 
         case GET_ADD_SUBJECT: {
             const newState = JSON.parse(JSON.stringify(state));
-            newState.addcommit.subject = action.param.subject;
-            newState.addcommit.key = action.param.key;
+            const { addcommits, eventindex } = newState;
+            const { subject, key } = action.params
+            addcommits[eventindex].subject = subject;
+            addcommits[eventindex].key = key;
             return newState;
         }
 
@@ -337,7 +365,8 @@ export default function EventReducer(state = initState, action) {
 
         case GET_ADD_CONTENT: {
             const newState = JSON.parse(JSON.stringify(state));
-            newState.addcommit.content = action.param.content;
+            const { addcommits, eventindex } = newState;
+            addcommits[eventindex].content = action.param.content
             return newState;
         }
 
@@ -357,12 +386,14 @@ export default function EventReducer(state = initState, action) {
         case READDCOMMIT: {
             return {
                 ...state,
+                eventindex:0,
                 addtags:[],
-                addcommit:{
+                addcommits:[{
+                    key:'',
                     subject:'',
                     content:'',
                     date:'',
-                }
+                }]
             }
         }
 
@@ -464,6 +495,27 @@ export default function EventReducer(state = initState, action) {
                 loading: false
             }
         }
+
+        case ADD_ADDCOMMITS: {
+            const newState = JSON.parse(JSON.stringify(state));
+            const obj = {
+                key:'',
+                subject:'',
+                content:'',
+                date:'',
+            };
+            newState.addcommits.push(obj);
+            return newState;
+        }
+
+        case GET_EVENTINDEX: {
+            const { eventindex } = action.param;
+            return {
+                ...state,
+                eventindex
+            }
+        }
+        
 
         default: {
             return state

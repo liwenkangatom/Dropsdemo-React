@@ -1,14 +1,12 @@
 import styled from 'styled-components';
 
 export const SearchWrapper = styled.div`
-    position: relative;
     width: 100%;
     height: 71px;
-    top: 24px;
-    left: 24px;
+    margin-top:20px;
+
 `
 export const Search = styled.input `
-    position: absolute;
     padding: 0 30px;
     width: 179px;
 	height: 32px;
@@ -23,16 +21,15 @@ export const Tags = styled.div`
 `
 export const TagsWrapper = styled.div`
     position: absolute;
-    width: 226px;
+    width: 100%;
     height: 40px;
     left: 50%;
     transform: translateX(-50%);
 `
 export const Text = styled.div`
-    position: absolute;
     width: 35px;
     height: 15px;
-    left: 24px;
+    margin-left:6px;
     font-family: ArialMT;
     font-size: 16px;
     font-weight: normal;
@@ -42,10 +39,11 @@ export const Text = styled.div`
     color: #434343;
 `
 export const Add = styled.a`
-    position: absolute;
     width: 12px;
     height: 12px;
-    right: 14px;
+    float: right;
+    margin-right: 5px;
+    margin-top: -14px;
     line-height: 40px;
     color: #aaaaaa
     &:hover {
@@ -62,7 +60,7 @@ export const Menu = styled.div`
 		rgba(124, 124, 124, 0.29);
     border-radius: 4px;
 `
-export const MenuItem = styled.div`
+export const Mtem = styled.div`
     width: 118px;
     height: 27px;
     line-height: 27px;

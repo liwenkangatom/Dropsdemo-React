@@ -1,0 +1,22 @@
+.Home{
+    width: 100%;
+    height: 720px;
+}
+.header{
+    width: 100%;
+    height: 100px;
+}
+.section{
+    width: 100%;
+    height: 620px;
+}
+.sider{
+    width: 100%;
+    height: 620px;
+    float: left;
+}
+.chart{
+    width: 60%;
+    height: 620px;
+    float: left;
+}

@@ -6366,6 +6366,13 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-contextmenu@^2.9.3:
+  version "2.9.3"
+  resolved "https://registry.yarnpkg.com/react-contextmenu/-/react-contextmenu-2.9.3.tgz#f6de2e0770445c60ed14f4b37af3419e32866ba1"
+  dependencies:
+    classnames "^2.2.5"
+    object-assign "^4.1.0"
+
 react-dev-utils@^5.0.2:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-5.0.2.tgz#7bb68d2c4f6ffe7ed1184c5b0124fcad692774d2"

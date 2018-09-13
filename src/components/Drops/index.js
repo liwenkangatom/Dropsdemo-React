@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { generateList, humanizeDate } from '../Common/utils';
 import { DisplayWrapper, Number, Text, EventDrops } from './style';
-import { Icon } from 'antd';
+
 let tooltip;
 let drop;
 let chart;

@@ -3,29 +3,25 @@ import 'antd/dist/antd.css';
 import { Layout } from 'antd';
 import AddEvent from '../AddEvent';
 import Drops from '../Drops';
+import Submit from '../Submit';
 import * as actions from '../Drops/DropsRedux';
-import {bindActionCreators } from 'redux';
-import {connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-const { Content } = Layout;
+
 class RightBar extends Component {
 
-  // 从json获取初始数据
-    componentDidMount(){
-
-      const thedata = require('../../data.json');
-      this.props.initEventRedux(thedata[0].gData,thedata[0].data,thedata[0].eventtag)
+    componentDidMount(){   
+      this.props.initEventRedux()
     }
     render() {
-      return (
-  
-          <Layout>
-            <Content style={{ margin: '38px 38px' }}>
-              <div style={{ padding: 24, background: '#fff',minHeight: 735 }}>  
-                <AddEvent></AddEvent>
+      return (  
+          <Layout>     
+              <div style={{position:'relative', padding: 24, background: '#fff',minHeight: 735 }}>  
+                <AddEvent/>
+                <Submit/>
                 <Drops/>
               </div>
-            </Content>
           </Layout>
   
       );

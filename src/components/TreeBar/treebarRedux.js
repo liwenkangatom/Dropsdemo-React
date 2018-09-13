@@ -122,16 +122,11 @@ export function onSelect(selectedKeys, info) {
 // }
 // REDUCERS
 const initState = {
-
     selectedKeys: [
         '0'
     ],
-
     gData:[],
-    dataList: [],
-    
-
-
+    dataList: [],    
     error: false,
     loading: true
 }

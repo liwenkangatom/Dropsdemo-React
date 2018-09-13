@@ -46,22 +46,21 @@ class AddEvent extends Component {
   handleOk = () => {
     if (this.props.addtags.length){
       this.setState({ loading: true });
-      setTimeout(() => {
-        this.setState({ loading: false, confirm: true, visible: false});
-      }, 3000);
       const total = this.state.total;
       const addcommits = [];
       total.forEach(item => {
         addcommits.push(this.props.addcommits[item])
-      })
-      
+      })      
       this.props.addtags.forEach( key =>{
         this.props.addEventAction(key, addcommits)
       })
       
       this.props.reAddCommits()
+      setTimeout(() => {
+        this.setState({ loading: false, confirm: true, visible: false});
+      }, 3000);
     } else {
-      console.log("meixie")
+      console.log("NO Tags")
     }
   }
 
@@ -80,10 +79,13 @@ class AddEvent extends Component {
     const total = this.state.total;
     let count = this.state.count;
     count = count + 1;
-    total.push(count)
+    total.push(count);
+    const selectpage = total.length;
+    this.props.getEventIndex(total[selectpage-1]);
     this.setState({
       total,
-      count
+      count,
+      selectpage
     })
     this.props.addAddCommits();
   }
@@ -101,14 +103,16 @@ class AddEvent extends Component {
     const total = this.state.total;
     if(index === total.length-1){
       selectpage = selectpage - 1;
+      this.props.getEventIndex(total[selectpage-1]);
+    } else {
+      this.props.getEventIndex(total[selectpage]);
     }
-    this.props.getEventIndex(total[selectpage-1]);
-    console.log("2:",selectpage)
     total.forEach((item2,index) => {
       if(item === item2){
         total.splice(index,1);
       }
     })
+
     this.setState({
       total,
       selectpage,
@@ -221,7 +225,7 @@ class AddEvent extends Component {
 
             {
               total.map((item,index) => {
-                if(index + 1  !== parseInt(selectpage, 10)){
+                if(index + 1  !== selectpage) {
                   return(
                     <EventWrapper key={item} style={{display:'none'}}>
                       <Close  onClick={this.deleteItem.bind(this,item,index)}/>
@@ -254,6 +258,7 @@ class AddEvent extends Component {
 }
 
 function  mapStateToProps(state) {
+
   return {
     addtags: state.home.event.addtags,
     addcommits: state.home.event.addcommits

@@ -18,6 +18,10 @@ const DELETE_EVENT = 'DELETE_EVENT'
 const DELETE_EVENT_SUCCESS = 'DELETE_EVENT_SUCCESS'
 const DELETE_EVENT_ERROR = 'DELETE_EVENT_ERROR'
 
+const UPLOAD_TAG_EVENT = 'UPLOAD_TAG_EVENT'
+const UPLOAD_TAG_EVENT_SUCCESS = 'UPLOAD_TAG_EVENT_SUCCESS'
+const UPLOAD_TAG_EVENT_ERROR = 'UPLOAD_TAG_EVENT_ERROR'
+
 const GET_ADD_TAGS = 'GET_ADD_TAGS'
 const GET_ADD_TIME = 'GET_ADD_TIME'
 const GET_ADD_SUBJECT = 'GET_ADD_SUBJECT'
@@ -34,13 +38,22 @@ const GET_EVENTINDEX = 'GET_EVENTINDEX'
 const ADD_ADDCOMMITS = 'ADD_ADDCOMMITS'
 
 // ACTION CREATOR
-export const getInitEventRedux = (gData,data,eventtag) =>{ 
-    return{
-        type:INIT_EVENT_REDUX_SUCCESS,  
-        params:{
-            gData,
+export const getInitEventRedux = () =>{ 
+    return {
+        url: api.select_Events_Tid_Url,
+        // url: 'api/data.json',
+        types:[INIT_EVENT_REDUX,INIT_EVENT_REDUX_SUCCESS,INIT_EVENT_REDUX_ERROR], 
+    }
+}
+
+export const uploadTagEvent = (data, eventtag, gData) =>{
+    return {
+        url: api.add_Event_Param_Url,
+        types:[UPLOAD_TAG_EVENT,UPLOAD_TAG_EVENT_SUCCESS,UPLOAD_TAG_EVENT_ERROR],
+        params: {
             data,
-            eventtag
+            eventtag,
+            gData
         }
     }
 }
@@ -82,6 +95,7 @@ export const getAddEventContent = (content) => {
     }
 }
 
+
 export const addEventAction = (tagkey, commits) => {
     return {
         type: ADD_EVENT_SUCCESS,
@@ -91,6 +105,7 @@ export const addEventAction = (tagkey, commits) => {
         }
     }
 } 
+
 
 export const reAddCommits = () => {
     return {
@@ -188,55 +203,8 @@ export const addAddCommits = () => {
 }
 
 
-/* 
-
-export const getInitEventRedux = (gData,data) =>{ 
-    return{
-        type:[INIT_EVENT_REDUX, INIT_EVENT_REDUX_ERROR, INIT_EVENT_REDUX_SUCCESS],  
-        params:{
-            gData,
-            data，
-            eventtag,
-        }
-    }
-}
-
-export const changeCommit = (changecommit, showtags) => {
-    return {
-        type: [CHANGE_EVENT,CHANGE_EVENT_SUCCESS,CHANGE_EVENT_ERROR],
-        param: {
-            changecommit,
-            showtags
-        }
-    }
-}
-
-export function addEventAction(name,commits) {
-    return {
-        url: api.change_Events_Id_Param_Url,
-        types:[ ADD_EVENT, ADD_EVENT_SUCCESS, ADD_EVENT_ERROR],
-        params: {
-            name: name,
-            commits: commits
-        }
-    }
-}
-
-export const deleteEvent = (eventkey) => {
-    return {
-        types: [DELETE_EVENT_SUCCESS, DELETE_EVENT, DELETE_EVENT_ERROR],
-        param: {
-            eventkey
-        }
-    }
-}
-
- */
-
-
 // REDUCER
 const initState = {
-    gData: [],
     data: [],
     eventtag: [],
     addtags:[],
@@ -247,7 +215,6 @@ const initState = {
         date:'',
     }],
     eventindex: 0,
-    selectedKeys: ["0","0-1","0-2"],
     showcommit:{
         key:'',
         subject:'',
@@ -312,9 +279,8 @@ export default function EventReducer(state = initState, action) {
         case INIT_EVENT_REDUX_SUCCESS: {
             return {
                 ...state,
-                gData: action.params.gData,
-                data: action.params.data,
-                eventtag: action.params.eventtag,
+                data: action.payload.data,
+                eventtag: action.payload.eventtag,
                 error: false,
                 loading: false,
             }
@@ -377,7 +343,6 @@ export default function EventReducer(state = initState, action) {
         }
 
         case GET_CHANGE_KEY:{
-
             const newState = JSON.parse(JSON.stringify(state));
             newState.changecommit.key = action.param.eventkey;
             return newState;
@@ -516,7 +481,29 @@ export default function EventReducer(state = initState, action) {
             }
         }
         
+        case UPLOAD_TAG_EVENT: {
+            return {
+                ...state,
+                loading: true,
+                error: false,
+            }
+        }
 
+        case UPLOAD_TAG_EVENT_SUCCESS: {
+            return {
+                ...state,
+                loading: false,
+                error: false,
+            }
+        }
+
+        case UPLOAD_TAG_EVENT_ERROR: {
+            return {
+                ...state,
+                loading: false,
+                error: true,
+            }
+        }
         default: {
             return state
         }

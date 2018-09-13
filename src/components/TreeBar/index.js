@@ -241,7 +241,7 @@ onchangeHandle = (e) => {
     const { searchValue, expandedKeys, autoExpandParent, addroot, selectedKeys} = this.state
     const { renamevalue, addvalue } = this.state
     
-    console.log(this.state)
+  
 
     let titlecreator = (item) =>
       <ContextMenuTrigger  id="some_unique_identifier" 
@@ -333,7 +333,6 @@ onchangeHandle = (e) => {
         </TreeNode>
     )
   });
-    console.log(this.state)
     let menuitem = <div style={{
         "width": "118px",
 	      "height": "88px",

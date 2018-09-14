@@ -131,7 +131,7 @@ export function selectTags(selectedKeys, info) {
 // REDUCERS
 const initState = {
     selectedKeys: [
-        '0'
+    
     ],
     gData:{"tree":[
         {"key": 1,"title": "hello","pid": null},

@@ -63,7 +63,7 @@ class TagS extends Component {
       })
       tagkeys.forEach(item => {
         dataList.forEach(item2 => {
-          if(item === item2.key) {
+          if(item == item2.key) {
             tags.push([item2.key,item2.title])
           }
         })

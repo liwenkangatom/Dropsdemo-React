@@ -640,7 +640,7 @@ onchangeHandle = (e) => {
                     </Input>}>
             </TreeNode>
           </Tree>
-          <Button  size="small" onClick={this.showModal}>CONFIRM</Button>
+          {/* <Button  size="small" onClick={this.showModal}>CONFIRM</Button>
           <Modal title="UPDATA"
           visible={this.state.confirmVisible}
           onOk={this.handleOk}
@@ -648,7 +648,7 @@ onchangeHandle = (e) => {
           onCancel={this.handleCancel}
           >
           <p>Are you sure to confirm those changes?</p>
-          </Modal>
+          </Modal> */}
           <ContextMenu 
           id="some_unique_identifier" 
           >

@@ -38,8 +38,11 @@ const getshowdata = (selectedKeys, eventtag, data, gdata) =>{
             commits:[]
         }
         gdata.forEach((tag) => {
-            if(tag.key === key){
+
+            if(tag.key == key){
+
                 showdateitem.name = tag.title
+                
             }
         })
         eventtag.forEach((item) => {
@@ -162,10 +165,10 @@ class Drops extends Component {
                     .style('pointer-events', 'auto')
         
                 this.props.getShowCommit(commit);
-        
+                console.log(d3)
                 tooltip
-                    .style('left', `${d3.event.pageX - 30}px`)
-                    .style('top', `${d3.event.pageY + 20}px`);  
+                    .style('left', `${d3.event.pageX - 270}px`)
+                    .style('top', `${d3.event.pageY - 190}px`);  
             },
         
             onMouseOut: () => {
@@ -221,7 +224,7 @@ function  mapStateToProps(state) {
         selectedKeys: state.home.treebar.selectedKeys,
         data: state.home.event.data,
         eventtag: state.home.event.eventtag,
-        gdata: state.home.treebar.gData,
+        gdata: state.home.treebar.gData.tree,
         changecommit: state.home.event.changecommit,
         showtags: state.home.event.showtags,
     }

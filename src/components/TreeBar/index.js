@@ -663,14 +663,13 @@ onchangeHandle = (e) => {
           this.setState({siderwidth: e.clientX})
         }} onDragEnd={
           (e)=>{
-            e.persist
-          console.log(e.clientX)
-          setsider(e.clientX)
+
           if(e.clientX<= 200){
             this.setState({siderwidth: 200})
           }else if(e.clientX>= 500){
             this.setState({siderwidth: 500})
-          }else this.setState({siderwidth: e.clientX})
+          }else this.setState({siderwidth: e.clientX}) 
+          this.props.setsider(this.state.siderwidth)
           }
         }></div> 
           

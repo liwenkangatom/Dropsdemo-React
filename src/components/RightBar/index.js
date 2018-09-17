@@ -7,7 +7,7 @@ import Submit from '../Submit';
 import * as actions from '../Drops/DropsRedux';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
+const { Content } = Layout;
 
 class RightBar extends Component {
 
@@ -16,12 +16,14 @@ class RightBar extends Component {
     }
     render() {
       return (  
-          <Layout>     
+          <Layout> 
+             <Content style={{ margin: '38px 38px' }}>
               <div style={{position:'relative', padding: 24, background: '#fff',minHeight: 735 }}>  
                 <AddEvent/>
                 <Submit/>
                 <Drops/>
               </div>
+            </Content>
           </Layout>
   
       );

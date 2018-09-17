@@ -24,9 +24,7 @@ class Home extends Component {
                 </div>
                 <div className='section'>
                     <div className='sider'>
-                        <TreeBar 
- 
-                        >
+                        <TreeBar>
                             <EventDrop></EventDrop>
                         </TreeBar>
                     </div>

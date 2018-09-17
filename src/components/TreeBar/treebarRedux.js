@@ -150,7 +150,8 @@ const initState = {
         {"key": 5, "title": "huhi", "pid": 4}
       ], "topkey": 5},
     error: false,
-    loading: true
+    loading: true,
+    siderwidth: 200,
 }
 
 export default function LeftSlideBarReducer(state = initState, action) {

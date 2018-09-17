@@ -40,13 +40,11 @@ const getshowdata = (selectedKeys, eventtag, data, gdata) =>{
         gdata.forEach((tag) => {
 
             if(tag.key == key){
-
-                showdateitem.name = tag.title
-                
+                showdateitem.name = tag.title 
             }
         })
         eventtag.forEach((item) => {
-            if(item.tagkey === key){
+            if(item.tagkey == key){
                 const eventkey = item.eventkey
                 data.forEach((value) => {
                     if(value.key === eventkey){
@@ -100,13 +98,45 @@ class Drops extends Component {
             name: repository.name,
             data: repository.commits,
         }));
-        //自定义箭头,String类型
-        // const indicator = {
-        //     previousText: (<Icon type="caret-left" theme="outlined" />),
-        //     nextText: "◀"
-        // }
+        
+        drop ={
+            date: d => new Date(d.date),
+            onClick: () => {
+                tooltip
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 0)
+                    .style('pointer-events', 'none');
+                this.setState({
+                    visible: true,
+                });
+            },
 
-        let  d2 = {d3,drop,line,zoom}
+            onMouseOver: commit =>{
+                tooltip
+                    .transition()
+                    .duration(200)
+                    .style('opacity', 1) 
+                    .style('pointer-events', 'auto')
+        
+                this.props.getShowCommit(commit);
+                console.log(this.props.siderwidth)
+                tooltip
+                    .style('left', `${d3.event.pageX - 30 - this.props.siderwidth}px`)
+                    .style('top', `${d3.event.pageY + 20}px`);  
+            },
+        
+            onMouseOut: () => {
+                tooltip
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 0)
+                    .style('pointer-events', 'none');
+            }
+        }
+        
+        let d2 = {d3,drop,line,zoom};
+
         chart = eventDrops(d2);
         d3
         .select('#eventdrops-demo')
@@ -143,44 +173,10 @@ class Drops extends Component {
     }
 
     componentDidMount(){
-        tooltip = d3.select('.tooltip');
-        drop ={
-            date: d => new Date(d.date),
-            onClick: () => {
-                tooltip
-                    .transition()
-                    .duration(500)
-                    .style('opacity', 0)
-                    .style('pointer-events', 'none');
-                this.setState({
-                    visible: true,
-                });
-            },
-
-            onMouseOver: commit =>{
-                tooltip
-                    .transition()
-                    .duration(200)
-                    .style('opacity', 1) 
-                    .style('pointer-events', 'auto')
-        
-                this.props.getShowCommit(commit);
-                tooltip
-                    .style('left', `${d3.event.pageX }px`)
-                    .style('top', `${d3.event.pageY }px`);  
-            },
-        
-            onMouseOut: () => {
-                tooltip
-                    .transition()
-                    .duration(500)
-                    .style('opacity', 0)
-                    .style('pointer-events', 'none');
-            }
-        }
         zoom = {
             onZoomEnd: () => this.updateCommitsInformation(chart),
         };
+        tooltip = d3.select('.tooltip');
 
         numberCommitsContainer = document.getElementById('numberCommits');
         zoomStart = document.getElementById('zoomStart');
@@ -219,6 +215,8 @@ class Drops extends Component {
 }
 
 function  mapStateToProps(state) {
+    console.log("redux:",state.home.event)
+    console.log(state)
     return {
         selectedKeys: state.home.treebar.selectedKeys,
         data: state.home.event.data,
@@ -226,6 +224,7 @@ function  mapStateToProps(state) {
         gdata: state.home.treebar.gData.tree,
         changecommit: state.home.event.changecommit,
         showtags: state.home.event.showtags,
+        siderwidth: state.home.treebar.siderwidth,
     }
 }
 function mapDispatchToProps(Dispatch) {

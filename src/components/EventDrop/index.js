@@ -20,9 +20,9 @@ export default class EventDrop extends Component {
     const { eventtitle } = this.state
     return (
       <div>
-        <div className="EventDrop">
+        
           <RightBar></RightBar>
-        </div>
+        
       </div>
     )
   }

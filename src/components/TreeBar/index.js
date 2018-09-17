@@ -669,6 +669,7 @@ onchangeHandle = (e) => {
           }else if(e.clientX>= 500){
             this.setState({siderwidth: 500})
           }else this.setState({siderwidth: e.clientX}) 
+          console.log(this.state.siderwidth)
           this.props.setsider(this.state.siderwidth)
           }
         }></div> 

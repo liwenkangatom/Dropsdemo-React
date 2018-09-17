@@ -70,7 +70,7 @@ class TagS extends Component {
       const addtag  = [addtagkey ,label[0]];
       let tagkeys=[];
       let tags = state.tags;
-      if (addtag && tags.every(item => item[0] !== addtagkey )) {
+      if (addtag && tags.every(item => item[0] != addtagkey )) {
         tags.push(addtag);
       }
       tags.forEach(tag => {

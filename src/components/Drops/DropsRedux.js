@@ -383,7 +383,7 @@ export default function EventReducer(state = initState, action) {
             let data = [];
             let list = [];
             newState.eventtag.forEach((item) => {
-                if(item.eventkey !== commit.key){
+                if(item.eventkey != commit.key){
                     list.push(item);
                 }
             })

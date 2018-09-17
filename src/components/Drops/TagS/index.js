@@ -3,7 +3,42 @@ import * as actions from '../DropsRedux';
 import {bindActionCreators } from 'redux';
 import {connect } from 'react-redux';
 import Comtag from '../../Common/Comtag';
-import { generateList } from '../../Common/utils';
+
+const deepCopy = (obj) => {
+  if(typeof obj !== 'object'){
+      return obj;
+  }
+  var newobj = {};
+  for ( var attr in obj) {
+      newobj[attr] = deepCopy(obj[attr]);
+  }
+  return newobj;
+}
+// key, pid, child
+const transData=(b) =>{
+// 参数断开引用
+let a = []
+for(let k in b) {
+  a[k] = deepCopy(b[k])
+}
+
+let r = [], hash = {}
+for (let i in a) {
+    hash[(a[i].key)] = a[i];
+}
+for (let j in a) {
+    let aVal = a[j]
+    let hashVP = hash[aVal.pid];
+    if (hashVP) {
+        // !hashVP[children] && (hashVP[children] = []);
+        if(!hashVP.children) hashVP.children = []
+        hashVP.children.push(aVal);
+    } else {
+        r.push(aVal);
+    }
+}
+return r;
+}
 
 class TagS extends Component {
     constructor(props){
@@ -52,8 +87,6 @@ class TagS extends Component {
     }
     
     componentDidMount() {
-      let dataList = [];
-      generateList(this.props.gData, dataList);
       let tagkeys=[];
       let tags=[];
       this.props.eventtag.forEach((item) => {
@@ -62,7 +95,7 @@ class TagS extends Component {
         }
       })
       tagkeys.forEach(item => {
-        dataList.forEach(item2 => {
+        this.props.gData.forEach(item2 => {
           if(item == item2.key) {
             tags.push([item2.key,item2.title])
           }
@@ -81,7 +114,7 @@ class TagS extends Component {
             inputVisible={inputVisible}
             value={value}
             onChange={this.onChange}
-            gData={this.props.gData}
+            gData={transData(this.props.gData)}
             handleClose={this.handleClose}
             showInput={this.showInput}
           />
@@ -93,7 +126,7 @@ class TagS extends Component {
 
 function  mapStateToProps(state) {
   return {
-      gData: state.home.treebar.gData,
+      gData: state.home.treebar.gData.tree,
       eventkey: state.home.event.showcommit.key,
       eventtag: state.home.event.eventtag,
       tags: state.home.event.showtags

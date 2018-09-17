@@ -3,7 +3,41 @@ import Comtag from '../../Common/Comtag';
 import * as actions from '../../Drops/DropsRedux';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+const deepCopy = (obj) => {
+  if(typeof obj !== 'object'){
+      return obj;
+  }
+  var newobj = {};
+  for ( var attr in obj) {
+      newobj[attr] = deepCopy(obj[attr]);
+  }
+  return newobj;
+}
+// key, pid, child
+const transData=(b) =>{
+// 参数断开引用
+let a = []
+for(let k in b) {
+  a[k] = deepCopy(b[k])
+}
 
+let r = [], hash = {}
+for (let i in a) {
+    hash[(a[i].key)] = a[i];
+}
+for (let j in a) {
+    let aVal = a[j]
+    let hashVP = hash[aVal.pid];
+    if (hashVP) {
+        // !hashVP[children] && (hashVP[children] = []);
+        if(!hashVP.children) hashVP.children = []
+        hashVP.children.push(aVal);
+    } else {
+        r.push(aVal);
+    }
+}
+return r;
+}
 class TagS extends Component {
     constructor(props){
         super(props);
@@ -61,7 +95,7 @@ class TagS extends Component {
             inputVisible={inputVisible}
             value={value}
             onChange={this.onChange}
-            gData={this.props.gData}
+            gData={transData(this.props.gData)}
             handleClose={this.handleClose}
             showInput={this.showInput}
           />
@@ -72,7 +106,7 @@ class TagS extends Component {
 
 function  mapStateToProps(state) {
   return {
-    gData: state.home.treebar.gData,
+    gData: state.home.treebar.gData.tree,
   }
 }
 function mapDispatchToProps(Dispatch) {

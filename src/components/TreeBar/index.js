@@ -15,6 +15,7 @@ import { Search,
 import './treebar.css'
 
 import { ContextMenu, MenuItem , ContextMenuTrigger} from 'react-contextmenu'
+import { setsider } from './treebarRedux';
 
 const {Sider, Content, Header} = Layout
 const confirm = Modal.confirm;
@@ -664,6 +665,7 @@ onchangeHandle = (e) => {
           (e)=>{
             e.persist
           console.log(e.clientX)
+          setsider(e.clientX)
           if(e.clientX<= 200){
             this.setState({siderwidth: 200})
           }else if(e.clientX>= 500){
@@ -691,6 +693,7 @@ onchangeHandle = (e) => {
   }
 }
 const mapStateToProps=(state)=>{
+  console.log(state)
   return{
     gData: state.home.treebar.gData,
     loading: state.home.treebar.loading
@@ -704,7 +707,8 @@ const mapDispatchToProps= dispatch => {
       // deleteTag: bindActionCreators(actions.home.treebar.deletetag,dispatch),
       // addTag: bindActionCreators(actions.home.treebar.addtag,dispatch),
       selectTags: bindActionCreators(actions.home.treebar.selectTags,dispatch),
-      confirmTags: bindActionCreators(actions.home.treebar.confirmTags, dispatch)
+      confirmTags: bindActionCreators(actions.home.treebar.confirmTags, dispatch),
+      setsider: bindActionCreators(actions.home.treebar.setsider, dispatch)
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TreeBar)

@@ -7,7 +7,7 @@ import api from '../../api'
     const GET_TAGS_ALL = 'GET_TAGS_ALL'
     const GET_TAGS_ALL_SUCCESS = 'GET_TAGS_ALL_SUCCESS'
     const GET_TAGS_ALL_ERROR = 'GET_TAGS_ALL_ERROR'
-
+    const SET_SIDER = 'SET_SIDER'
     // const ADD_TAG = 'ADD_TAG'
     // const ADD_TAG_SUCCESS = 'ADD_TAG_SUCCESS'
     // const ADD_TAG_ERROR = 'ADD_TAG_ERROR'
@@ -93,6 +93,15 @@ export function selectTags(selectedKeys, info) {
         }
     }
 }
+export function setsider(siderwidth) {
+    console.log('setsider', siderwidth)
+    return { 
+        type: SET_SIDER,
+        payload: {
+            siderwidth
+        }
+    }
+}
 // 操作drops state 写在
 // export function onCheck(checkedKeys, info) {
 //     return {
@@ -145,6 +154,7 @@ const initState = {
 }
 
 export default function LeftSlideBarReducer(state = initState, action) {
+    
     switch(action.type){
 
         case ONSELECT: {
@@ -198,6 +208,13 @@ export default function LeftSlideBarReducer(state = initState, action) {
                 ...state,
                 error: true,
                 loading: false
+            }
+        }
+        case SET_SIDER: {
+            let siderwidth = action.payload.siderwidth
+            return {
+                ...state,
+                siderwidth: siderwidth
             }
         }
         // case RENAME_TAG: {

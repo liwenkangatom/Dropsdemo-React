@@ -61,7 +61,7 @@ const getshowdata = (selectedKeys, eventtag, data, gdata) =>{
 }
 
 const demoStyle = {
-    width: '65%',
+    width: '500px',
     position: 'absolute',
     margin: '64px auto'
 }
@@ -165,10 +165,9 @@ class Drops extends Component {
                     .style('pointer-events', 'auto')
         
                 this.props.getShowCommit(commit);
-                console.log(d3)
                 tooltip
-                    .style('left', `${d3.event.pageX - 270}px`)
-                    .style('top', `${d3.event.pageY - 190}px`);  
+                    .style('left', `${d3.event.pageX }px`)
+                    .style('top', `${d3.event.pageY }px`);  
             },
         
             onMouseOut: () => {

@@ -50,7 +50,7 @@ function  mapStateToProps(state) {
   return {
     data: state.home.event.data,
     eventtag: state.home.event.eventtag,
-    gData: state.home.treebar.gData
+    gData: state.home.treebar.gData.tree
   }
 }
 function mapDispatchToProps(Dispatch) {

@@ -59,7 +59,7 @@ const getshowdata = (selectedKeys, eventtag, data, gdata) =>{
 }
 
 const demoStyle = {
-    width: '500px',
+    width: '80%',
     position: 'absolute',
     margin: '64px auto'
 }
@@ -122,8 +122,8 @@ class Drops extends Component {
                 this.props.getShowCommit(commit);
                 console.log(this.props.siderwidth)
                 tooltip
-                    .style('left', `${d3.event.pageX - 30 - this.props.siderwidth}px`)
-                    .style('top', `${d3.event.pageY + 20}px`);  
+                    .style('left', `${d3.event.pageX - 40 - this.props.siderwidth}px`)
+                    .style('top', `${d3.event.pageY -230}px`);  
             },
         
             onMouseOut: () => {
@@ -215,8 +215,9 @@ class Drops extends Component {
 }
 
 function  mapStateToProps(state) {
-    console.log("redux:",state.home.event)
-    console.log(state)
+    // console.log("redux:",state.home.event)
+    // console.log(state)
+    console.log('siderwidth:',state.home.treebar.siderwidth)
     return {
         selectedKeys: state.home.treebar.selectedKeys,
         data: state.home.event.data,

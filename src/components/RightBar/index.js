@@ -17,13 +17,13 @@ class RightBar extends Component {
     render() {
       return (  
           <Layout> 
-             <Content style={{ margin: '38px 38px' }}>
+
               <div style={{position:'relative', padding: 24, background: '#fff',minHeight: 735 }}>  
                 <AddEvent/>
                 <Submit/>
                 <Drops/>
               </div>
-            </Content>
+        
           </Layout>
   
       );

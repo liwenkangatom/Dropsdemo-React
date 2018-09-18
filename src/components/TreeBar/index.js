@@ -16,10 +16,12 @@ import './treebar.css'
 
 import { ContextMenu, MenuItem , ContextMenuTrigger} from 'react-contextmenu'
 import { setsider } from './treebarRedux';
+import LayoutContent from './LayoutContent';
 
 const {Sider, Content, Header} = Layout
 const confirm = Modal.confirm;
 const TreeNode = Tree.TreeNode;
+
 const getParentKey = (key, tree) => {
   let parentKey;
   for (let i = 0; i < tree.length; i++) {
@@ -70,22 +72,7 @@ const transData=(b) =>{
   return r;
 }
 class TreeBar extends Component {
-  // static propTypes = {
-  //   treeData: PropTypes.array,
-  //   addTag: PropTypes.func,
-  //   deleteTag: PropTypes.func,
-  //   renameTag: PropTypes.func,
-  //   selectedTag: PropTypes.func,
-  //   initTags: PropTypes.func,
-  // }
-  // static defaultProps = {
-  //   treeData: [],
-  //   addTag: ()=>console.log('addtag'),
-  //   deleteTag: ()=>console.log('deleteTag'),
-  //   renameTag: () =>console.log('renameTag'),
-  //   selectedTag: () =>console.log('selectedTag'),
-  //   initTags: ()=> console.log('init')
-  // }
+
   constructor(props) {
     super(props);
     this.state={
@@ -114,7 +101,6 @@ class TreeBar extends Component {
       confirmVisible: false
     }
   }
-
 onExpandHandle = (expandedKeys) => {
   this.exitEdit
   this.setState({
@@ -122,7 +108,6 @@ onExpandHandle = (expandedKeys) => {
     autoExpandParent: false,
   });
 }
-
 onSelectHandle = (selectedKeys, info) => {
   console.log('selected', selectedKeys, info);
 
@@ -168,6 +153,8 @@ onchangeHandle = (e) => {
   }
 // 收起面板
   toggle = () => {
+    console.log(this.state.siderwidth)
+    this.props.setsider(!this.state.collapsed?0:this.state.siderwidth)
     this.setState({
       collapsed: !this.state.collapsed,
     });
@@ -232,17 +219,19 @@ onchangeHandle = (e) => {
   checkvalue = (inputvalue) => {
     console.log(inputvalue)
     let tree = this.state.data.tree
-    for(let k in tree) {
-      console.log(tree[k].title)
-      if(tree[k].title === inputvalue) {
-        Modal.info({
-        title:'ERROR',
-        content:'Duplicate Tag'
-      })
-        return false
+    if(inputvalue){
+      for(let k in tree) {
+        console.log(tree[k].title)
+        if(tree[k].title === inputvalue) {
+          Modal.info({
+          title:'ERROR',
+          content:'Duplicate Tag'
+        })
+          return false
+        }
       }
-    }
-    return true
+      return true
+  }else return false
   }
   addaction=()=>{
     let title = this.state.addvalue
@@ -658,49 +647,57 @@ onchangeHandle = (e) => {
         </div>
 
 
-        <div className="slider" onDrag={(e)=>{
-         e.persist
-          this.setState({siderwidth: e.clientX})
-        }} onDragEnd={
-          (e)=>{
-
-          if(e.clientX<= 200){
-            this.setState({siderwidth: 200})
-          }else if(e.clientX>= 500){
-            this.setState({siderwidth: 500})
-          }else this.setState({siderwidth: e.clientX}) 
-          console.log(this.state.siderwidth)
-          this.props.setsider(this.state.siderwidth)
+        <div className="slider" 
+        onDrag={(e)=>{e.persist 
+        this.setState({siderwidth: e.clientX})}} 
+        onDragEnd={(e)=>{
+          if(!this.state.collapsed){
+            if (e.clientX <= 200) {
+              this.setState({
+                siderwidth: 200
+              })
+              this.props.setsider(200)
+            } else if (e.clientX >= 500) {
+              this.setState({
+                siderwidth: 500
+              })
+              this.props.setsider(500)
+            } else {
+              this.setState({
+                siderwidth: e.clientX
+              }) 
+              this.props.setsider(e.clientX)
+            }
+          }else{
+            this.props.setsider(0)
           }
-        }></div> 
-          
-        
+        }}>
+
+        </div> 
+
         </Sider>
-        <Layout onDragOver={()=>0}>
-          <Header style={{ background: '#fff', padding: 0 }}>
-            <Icon
-              className="trigger"
-              type={collapsed ? 'menu-unfold' : 'menu-fold'}
-              onClick={this.toggle}
-            />
-          </Header>
-          <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }} onClick={this.exitEdit}>
-            {this.props.children}
-          </Content>
-        </Layout>
+
+
+       <LayoutContent
+       toggle={this.toggle}
+       collapsed={this.state.collapsed}
+       exitEdit={this.exitEdit}
+       >
+        {this.props.children}
+       </LayoutContent>
       </Layout>
     )
   }
 }
 const mapStateToProps=(state)=>{
-  console.log(state)
+  // console.log(state)
   return{
     gData: state.home.treebar.gData,
     loading: state.home.treebar.loading
   }
 }
 const mapDispatchToProps= dispatch => {
-  console.log(actions)
+  // console.log(actions)
   return {
       initTags: bindActionCreators(actions.home.treebar.initTags,dispatch),
       // renameTag: bindActionCreators(actions.home.treebar.renametag,dispatch),

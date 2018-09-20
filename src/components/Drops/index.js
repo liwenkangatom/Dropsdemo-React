@@ -120,10 +120,10 @@ class Drops extends Component {
                     .style('pointer-events', 'auto')
         
                 this.props.getShowCommit(commit);
-                console.log(this.props.siderwidth)
+                // console.log(this.props.siderwidth)
                 tooltip
-                    .style('left', `${d3.event.pageX - 40 - this.props.siderwidth}px`)
-                    .style('top', `${d3.event.pageY -230}px`);  
+                    .style('left', `${d3.event.pageX - 60 - this.props.siderwidth}px`)
+                    .style('top', `${d3.event.pageY -200}px`);  
             },
         
             onMouseOut: () => {
@@ -144,7 +144,6 @@ class Drops extends Component {
         .call(chart);
         this.updateCommitsInformation(chart)
     }
-
 
     handleOk = () => {
         if(this.props.showtags.length > 0){
@@ -215,14 +214,14 @@ class Drops extends Component {
 }
 
 function  mapStateToProps(state) {
-    // console.log("redux:",state.home.event)
-    // console.log(state)
-    console.log('siderwidth:',state.home.treebar.siderwidth)
+    console.log("redux:",state.home.event)
+    console.log("state:",state)
+    console.log('gdata:',state.home.treebar.gData)
     return {
         selectedKeys: state.home.treebar.selectedKeys,
         data: state.home.event.data,
         eventtag: state.home.event.eventtag,
-        gdata: state.home.treebar.gData.tree,
+        gdata: state.home.treebar.gData,
         changecommit: state.home.event.changecommit,
         showtags: state.home.event.showtags,
         siderwidth: state.home.treebar.siderwidth,

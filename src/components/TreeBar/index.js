@@ -76,7 +76,7 @@ class TreeBar extends Component {
   constructor(props) {
     super(props);
     this.state={
-      data: {},
+      data: [],
       dataList: [],
       treeData: [],
 
@@ -135,7 +135,7 @@ onchangeHandle = (e) => {
     //   }
     //   return null;
     // }).filter((item, i, self) => item && self.indexOf(item) === i);
-    const tree = this.state.data.tree
+    const tree = this.state.data
     let expandedKeys = []
     expandedKeys = tree.map((item) => {
       if(item.title.indexOf(value) > -1 ) {
@@ -218,7 +218,7 @@ onchangeHandle = (e) => {
   }
   checkvalue = (inputvalue) => {
     console.log(inputvalue)
-    let tree = this.state.data.tree
+    let tree = this.state.data
     if(inputvalue){
       for(let k in tree) {
         console.log(tree[k].title)
@@ -237,13 +237,14 @@ onchangeHandle = (e) => {
     let title = this.state.addvalue
     if(this.checkvalue(title)){
       let pid = this.state.rightclickkey
-      let key = this.state.data.topkey+1
+      let date = new Date()
+      let key = date.getTime()
       
       let node = {key, title, pid}
       let data = this.state.data
-      data.tree.push(node)
-      data.topkey++
-      let treeData = transData(data.tree)
+      data.push(node)
+      
+      let treeData = transData(data)
       this.setState({
         data,
         treeData,
@@ -274,14 +275,15 @@ onchangeHandle = (e) => {
 
     if(this.checkvalue(title)) {
       let pid = null
-      let key = this.state.data.topkey+1
+      let date = new Date()
+      let key = date.getTime()
       let title = this.state.addvalue
 
       let node = {key, title, pid}
       let data = this.state.data
-      data.tree.push(node)
-      data.topkey++
-      let treeData = transData(data.tree)
+      data.push(node)
+      console.log(this.state)
+      let treeData = transData(data)
       this.setState({
         data,
         treeData,
@@ -306,12 +308,12 @@ onchangeHandle = (e) => {
       let data =this.state.data
       let key = this.state.rightclickkey
       
-      for (let k in data.tree) {
-        if(data.tree[k].key === key){
-          data.tree[k].title = title
+      for (let k in data) {
+        if(data[k].key === key){
+          data[k].title = title
         }
       }
-      let treeData = transData(data.tree)
+      let treeData = transData(data)
       this.setState({
         data,
         treeData,
@@ -343,16 +345,16 @@ onchangeHandle = (e) => {
     let data = this.state.data
     let key = this.state.rightclickkey
     let pid = null
-    for(let k in data.tree){
-      if(data.tree[k].key === key){
-        pid = data.tree[k].pid
-        data.tree.splice(k,1)
+    for(let k in data){
+      if(data[k].key === key){
+        pid = data[k].pid
+        data.splice(k,1)
       }
-      if(data.tree[k].pid === key) {
-        data.tree[k].pid = pid
+      if(data[k].pid === key) {
+        data[k].pid = pid
       }
     }
-    let treeData = transData(data.tree)
+    let treeData = transData(data)
     this.setState({
       data,
       treeData
@@ -393,31 +395,45 @@ onchangeHandle = (e) => {
     this.initTagsAction
   }
   initTagsAction = () => {
-    console.log(this.props.gData)
+    
+  }
+  // componentWillMount() {
+    
+
+  
+    
+    
+  //   // this.setState({
+  //   //   treeData
+  //   // })
+  //   // this.props.initTags(
+  //   // this.setState({data: this.props.gData},()=>{
+  //     // this.generateList(this.state.treeData)
+  //   // })
+  //   // this.setState({dataList: this.dataList})
+    
+  // }
+  
+  componentDidMount() {
     this.props.initTags()
     
   }
-  componentWillMount() {
-    this.initTagsAction
-    const data = this.props.gData
+  
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps)
+    const data = nextProps.gData
+    console.log(data)
     this.setState({
       data
-    })
-    let treeData = transData(data.tree)
+    }, ()=> {console.log(this.state.data)})
+    let treeData = transData(data)
     this.setState({
       treeData
     })
-    
-    // this.setState({
-    //   treeData
-    // })
-    // this.props.initTags(
-    // this.setState({data: this.props.gData},()=>{
-      // this.generateList(this.state.treeData)
-    // })
-    // this.setState({dataList: this.dataList})
-    
   }
+  
+ 
+  
   
   render() {
     const { collapsed, siderwidth , addkey, changekey, tmptagkey} = this.state

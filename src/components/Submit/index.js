@@ -28,7 +28,8 @@ class Submit extends Component {
   }
   handleSubmit = () => {
     this.setState({loading: true});
-    this.props.uploadTagEvent(this.props.data, this.props.eventtag, this.props.gData);
+    
+    this.props.uploadTagEvent(JSON.stringify(this.props.data),JSON.stringify(this.props.eventtag), JSON.stringify(this.props.gData));
     setTimeout(() => {
       this.setState({loading: false})
     }, 3000)
@@ -46,11 +47,10 @@ class Submit extends Component {
 }
 
 function  mapStateToProps(state) {
-
   return {
     data: state.home.event.data,
     eventtag: state.home.event.eventtag,
-    gData: state.home.treebar.gData.tree
+    gData: state.home.treebar.gData
   }
 }
 function mapDispatchToProps(Dispatch) {

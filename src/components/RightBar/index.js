@@ -7,7 +7,7 @@ import Submit from '../Submit';
 import * as actions from '../Drops/DropsRedux';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-const { Content } = Layout;
+
 
 class RightBar extends Component {
 

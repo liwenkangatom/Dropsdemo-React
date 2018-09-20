@@ -1,4 +1,4 @@
-const Api_Root='http://192.168.0.5:4000/etps/'
+const Api_Root = 'http://192.168.0.135:4000/etps/'
 // add tags (param={content})
 const add_Tag_Param_Url = Api_Root + 'tag/add/'
 // delete tags (param = tagId)

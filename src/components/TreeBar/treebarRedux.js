@@ -142,13 +142,8 @@ const initState = {
     selectedKeys: [
     
     ],
-    gData:{"tree":[
-        {"key": 1,"title": "hello","pid": null},
-        {"key": 2,"title": "word", "pid": null},
-        {"key": 3,"title": "!12", "pid": 1},
-        {"key": 4,"title": "huuh", "pid": 2},
-        {"key": 5, "title": "huhi", "pid": 4}
-      ], "topkey": 5},
+    gData:[
+      ],
     error: false,
     loading: true,
     siderwidth: 200,
@@ -176,11 +171,19 @@ export default function LeftSlideBarReducer(state = initState, action) {
         }
         case GET_TAGS_ALL_SUCCESS: {
             let data = action.payload
+            let gData = []
+            for (const item of data) {
+                let tag = {}
+                tag.key = item.pKey
+                tag.title = item.Name
+                tag.pid = item.ms_TagKey_Parent
+                gData.push(tag)
+            }
             return {
                 ...state,
                 error: false,
                 loading: false,
-                gData: data
+                gData
             }
         }
         case GET_TAGS_ALL_ERROR: {

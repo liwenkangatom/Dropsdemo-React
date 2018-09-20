@@ -106,7 +106,7 @@ class TagS extends Component {
 
 function  mapStateToProps(state) {
   return {
-    gData: state.home.treebar.gData.tree,
+    gData: state.home.treebar.gData,
   }
 }
 function mapDispatchToProps(Dispatch) {

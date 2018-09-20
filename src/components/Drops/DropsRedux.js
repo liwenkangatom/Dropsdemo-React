@@ -239,7 +239,7 @@ export default function EventReducer(state = initState, action) {
             const commits = action.params.commits;
             commits.forEach(commit => {
                 const eventtagitem = {
-                    key: tagkey + commit.key,
+                    key: new Date().getTime(),
                     eventkey: commit.key,
                     tagkey: tagkey,
                 }
@@ -277,10 +277,31 @@ export default function EventReducer(state = initState, action) {
         }
 
         case INIT_EVENT_REDUX_SUCCESS: {
+            // console.log(action)
+            let data = []
+            const result = action.payload.data
+            for (const event of result) {
+                let tmp = {}
+                tmp.key = event.pKey
+                tmp.subject = event.Subject
+                tmp.content = event.Content
+                tmp.date = event.DT
+                data.push(tmp)
+            }
+            const etag = action.payload.eventtag
+            let eventtag = []
+            for (const et of etag) {
+                let tmp = {}
+                tmp.key = et.pKey
+                tmp.eventkey = et.ms_EventpKey
+                tmp.tagkey = et.ms_TagpKey
+                eventtag.push(tmp)
+            }
+
             return {
                 ...state,
-                data: action.payload.data,
-                eventtag: action.payload.eventtag,
+                data,
+                eventtag,
                 error: false,
                 loading: false,
             }

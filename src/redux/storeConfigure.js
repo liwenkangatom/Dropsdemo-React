@@ -35,9 +35,10 @@ next({
 get(action.url, action.params)
 .then(result => {
     let res = result.text()
-    console.log(res)
+
     res.then(
-        value => {
+        value => {         
+            console.log(value)
             let data = JSON.parse(value)
             next({
             type: SUCCESS,

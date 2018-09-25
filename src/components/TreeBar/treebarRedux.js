@@ -172,13 +172,16 @@ export default function LeftSlideBarReducer(state = initState, action) {
         case GET_TAGS_ALL_SUCCESS: {
             let data = action.payload
             let gData = []
-            for (const item of data) {
+            if (data) {
+                for (const item of data) {
                 let tag = {}
                 tag.key = item.pKey
                 tag.title = item.Name
                 tag.pid = item.ms_TagKey_Parent
                 gData.push(tag)
             }
+            }
+            
             return {
                 ...state,
                 error: false,

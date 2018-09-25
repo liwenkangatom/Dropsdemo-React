@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import PropTypes from 'prop-types'
 
-import { Layout, Icon, Tree, Input, Modal, Button} from 'antd';
+import { Layout, Icon, Tree, Input, Modal} from 'antd';
 import 'antd/dist/antd.css';
 import {actions} from '../../redux'
 import {connect} from 'react-redux'
@@ -13,15 +13,11 @@ import { Search,
   Add
 } from './style'
 import './treebar.css'
-
 import { ContextMenu, MenuItem , ContextMenuTrigger} from 'react-contextmenu'
-import { setsider } from './treebarRedux';
 import LayoutContent from './LayoutContent';
-
-const {Sider, Content, Header} = Layout
+const {Sider} = Layout
 const confirm = Modal.confirm;
 const TreeNode = Tree.TreeNode;
-
 const getParentKey = (key, tree) => {
   let parentKey;
   for (let i = 0; i < tree.length; i++) {
@@ -46,14 +42,12 @@ const deepCopy = (obj) => {
     }
     return newobj;
 }
-// key, pid, child
 const transData=(b) =>{
   // 参数断开引用
   let a = []
   for(let k in b) {
     a[k] = deepCopy(b[k])
   }
- 
   let r = [], hash = {}
   for (let i in a) {
       hash[(a[i].key)] = a[i];
@@ -72,25 +66,21 @@ const transData=(b) =>{
   return r;
 }
 class TreeBar extends Component {
-
   constructor(props) {
     super(props);
     this.state={
       data: [],
       dataList: [],
       treeData: [],
-
       selectedKey: 0,
       collapsed: true,
       siderwidth: 200,
       searchValue: '',
-
       addkey: '',
       changekey: '',
       temptagkey: '',
       rightclickkey: '',
       addroot: false,
-
       expandedKeys: [],
       autoExpandParent: true,
       selectedKeys:[],
@@ -110,9 +100,7 @@ onExpandHandle = (expandedKeys) => {
 }
 onSelectHandle = (selectedKeys, info) => {
   console.log('selected', selectedKeys, info);
-
 }
-
 onCheckHandle = (checkedKeys, info) => {
   this.exitEdit
   console.log(checkedKeys); 
@@ -120,21 +108,12 @@ onCheckHandle = (checkedKeys, info) => {
    this.setState({
     selectedKeys: checkedKeys.checked
   })
-  // this.props.onSelect(checkedKeys.checked, info)
 }
-
 onCollapseHandle = (collapsed) => {
   this.setState({ collapsed });
 }
 onchangeHandle = (e) => {
-  
     const value = e.target.value;
-    // const expandedKeys = this.dataList.map((item) => {
-    //   if (item.title.indexOf(value) > -1) {
-    //     return getParentKey(item.key, this.state.data);
-    //   }
-    //   return null;
-    // }).filter((item, i, self) => item && self.indexOf(item) === i);
     const tree = this.state.data
     let expandedKeys = []
     expandedKeys = tree.map((item) => {
@@ -175,13 +154,11 @@ onchangeHandle = (e) => {
       },
     });
   }
-
   addhandle = () => {
     let expandedKeys = []
     expandedKeys = this.state.expandedKeys.concat()
     let key = (this.state.rightclickkey)+''
     expandedKeys.push(key)
-
     this.setState({
       addkey: this.state.rightclickkey,
       changekey: '',
@@ -189,7 +166,6 @@ onchangeHandle = (e) => {
       expandedKeys
     })
   }
-
   changehandle = () => {
     this.setState({
       changekey: this.state.rightclickkey,
@@ -197,11 +173,9 @@ onchangeHandle = (e) => {
       addroot: false
     })
   }
-
   deletehandle = () => {
     this.showDeleteConfirm
   }
-
   addRootTag = () => {
     this.setState({
       addroot: true,
@@ -259,20 +233,9 @@ onchangeHandle = (e) => {
       })
       
     }
-    // this.setState({
-    //   treeData
-    // })
-    // this.setState({addkey: ''},this.props.addTag(this.state.addvalue, this.state.rightclickkey))
-    // this.props.initTags()
-    // this.setState({data: this.props.gData},()=>{
-    //   this.generateList(this.state.data)
-    // })
-    // this.setState({dataList: this.dataList})
   }
-
   addrootaction = ()=>{
     let title = this.state.addvalue
-
     if(this.checkvalue(title)) {
       let pid = null
       let date = new Date()
@@ -338,7 +301,7 @@ onchangeHandle = (e) => {
     // this.setState({dataList: this.dataList})
   }
   renameinputchange=(e) => {
-    this.setState({renamevalue: e.target.value})
+    this.setState({renamevalue: e.target.value  })
     
   }
   deleteaction=()=>{
@@ -397,28 +360,11 @@ onchangeHandle = (e) => {
   initTagsAction = () => {
     
   }
-  // componentWillMount() {
-    
 
-  
-    
-    
-  //   // this.setState({
-  //   //   treeData
-  //   // })
-  //   // this.props.initTags(
-  //   // this.setState({data: this.props.gData},()=>{
-  //     // this.generateList(this.state.treeData)
-  //   // })
-  //   // this.setState({dataList: this.dataList})
-    
-  // }
-  
   componentDidMount() {
     this.props.initTags()
     
   }
-  
   componentWillReceiveProps(nextProps) {
     console.log(nextProps)
     const data = nextProps.gData
@@ -431,10 +377,6 @@ onchangeHandle = (e) => {
       treeData
     })
   }
-  
- 
-  
-  
   render() {
     const { collapsed, siderwidth , addkey, changekey, tmptagkey} = this.state
     const { searchValue, expandedKeys, autoExpandParent, addroot, selectedKeys} = this.state
@@ -475,6 +417,7 @@ onchangeHandle = (e) => {
           {
             (item.key == changekey)?
               <Input 
+              autoFocus
                 onPressEnter={this.renameaction}
                 onChange={this.renameinputchange} 
                 size='small' 
@@ -488,6 +431,7 @@ onchangeHandle = (e) => {
             disabled 
             title={
               <Input 
+              autoFocus
               size='small' 
               onPressEnter={this.addaction} 
               onChange={this.addinputchange}
@@ -511,6 +455,7 @@ onchangeHandle = (e) => {
           onPressEnter={this.renameaction}
           onChange={this.renameinputchange} 
           value={renamevalue} 
+          autoFocus
           size='small' 
           style={{width:'50px'}} 
           placeholder={item.title}></Input>:
@@ -522,9 +467,10 @@ onchangeHandle = (e) => {
         key={tmptagkey} 
         title={
             <Input 
+            autoFocus
             onPressEnter={this.addaction} 
             onChange={this.addinputchange}
-            value={addvalue} 
+            value={addvalue}
             size='small' 
             style={{width:'50px'}}></Input>}>
         </TreeNode>:''}
@@ -637,10 +583,12 @@ onchangeHandle = (e) => {
            <TreeNode 
             style={(addroot)?visible:unvisible} 
             title={<Input 
+                    // autoFocus
                     // onPressEnter={()=>{this.setState({addroot: false},addTag(this.state.addvalue, null))}} 
                     onPressEnter={this.addrootaction} 
                     onChange={(e)=>{this.setState({addvalue: e.target.value})}} 
                     value={this.state.addvalue}
+                    placeholder={this.state.addvalue}
                     size="small"
                     style={{width: "50px"}}>
                     </Input>}>
@@ -667,9 +615,10 @@ onchangeHandle = (e) => {
         style={{
           cursor: 'w-resize'
         }}
-        onMouseDown={(e)=>{e.persist 
+        onDrag={(e)=>{e.persist 
+      
         this.setState({siderwidth: e.clientX+10})}} 
-        onMouseUp={(e)=>{
+      onDragEnd={(e)=>{
           if(!this.state.collapsed){
             if (e.clientX <= 200) {
               this.setState({
@@ -709,19 +658,14 @@ onchangeHandle = (e) => {
   }
 }
 const mapStateToProps=(state)=>{
-  // console.log(state)
   return{
     gData: state.home.treebar.gData,
     loading: state.home.treebar.loading
   }
 }
 const mapDispatchToProps= dispatch => {
-  // console.log(actions)
   return {
       initTags: bindActionCreators(actions.home.treebar.initTags,dispatch),
-      // renameTag: bindActionCreators(actions.home.treebar.renametag,dispatch),
-      // deleteTag: bindActionCreators(actions.home.treebar.deletetag,dispatch),
-      // addTag: bindActionCreators(actions.home.treebar.addtag,dispatch),
       selectTags: bindActionCreators(actions.home.treebar.selectTags,dispatch),
       confirmTags: bindActionCreators(actions.home.treebar.confirmTags, dispatch),
       setsider: bindActionCreators(actions.home.treebar.setsider, dispatch)

@@ -57,7 +57,14 @@ class AddEvent extends Component {
       
       this.props.reAddCommits()
       setTimeout(() => {
-        this.setState({ loading: false, confirm: true, visible: false});
+        this.setState({ 
+          loading: false,
+          confirm: true,
+          visible: false,
+          count: 0,
+          total:[0],
+          selectpage:1,
+        });
       }, 3000);
     } else {
       console.log("NO Tags")

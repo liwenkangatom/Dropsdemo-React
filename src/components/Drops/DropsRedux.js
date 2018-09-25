@@ -237,12 +237,14 @@ export default function EventReducer(state = initState, action) {
             const newState = JSON.parse(JSON.stringify(state));
             const tagkey = action.params.tagkey;
             const commits = action.params.commits;
+            let count = 0;
             commits.forEach(commit => {
                 const eventtagitem = {
-                    key: new Date().getTime(),
+                    key: new Date().getTime() + count,
                     eventkey: commit.key,
                     tagkey: tagkey,
                 }
+                count++;
                 newState.eventtag.push(eventtagitem);
             })
 

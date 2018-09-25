@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { generateList, humanizeDate } from '../Common/utils';
 import { DisplayWrapper, Number, Text, EventDrops } from './style';
+import _default from 'antd/lib/date-picker';
 
 let tooltip;
 let drop;
@@ -64,6 +65,7 @@ const demoStyle = {
     margin: '64px auto'
 }
 
+
 class Drops extends Component {
     constructor(props) {
         super(props);
@@ -75,6 +77,7 @@ class Drops extends Component {
             },
             loading: false,
             visible: false,
+
         }
     }
 
@@ -91,9 +94,7 @@ class Drops extends Component {
 
     //事件展示
     show = () =>{
-        let dataList = [];
-        generateList(this.props.gdata, dataList);
-        const repositories = getshowdata(this.props.selectedKeys, this.props.eventtag, this.props.data, dataList );
+        const repositories = getshowdata(this.props.selectedKeys, this.props.eventtag, this.props.data, this.props.gdata );
         const repositoriesData = repositories.map(repository => ({
             name: repository.name,
             data: repository.commits,
@@ -135,14 +136,25 @@ class Drops extends Component {
             }
         }
         
-        let d2 = {d3,drop,line,zoom};
+        let d2;
+        if(chart === undefined){
+            d2 = {d3,drop,line,zoom}
+        } else {
+            const range = {
+                start: chart.scale().domain()[0],
+                end: chart.scale().domain()[1]
+            }
+            d2 = {d3,drop,line,zoom,range}
+        } 
+        console.log('chart: ',chart)
+        // let d2 = {d3,drop,line,zoom};
 
         chart = eventDrops(d2);
         d3
         .select('#eventdrops-demo')
         .data([repositoriesData])
         .call(chart);
-        this.updateCommitsInformation(chart)
+        this.updateCommitsInformation(chart);
     }
 
     handleOk = () => {
@@ -166,7 +178,6 @@ class Drops extends Component {
         this.setState({ visible: false });
     }
 
-
     componentDidUpdate() {
         this.show();
     }
@@ -180,6 +191,7 @@ class Drops extends Component {
         numberCommitsContainer = document.getElementById('numberCommits');
         zoomStart = document.getElementById('zoomStart');
         zoomEnd = document.getElementById('zoomEnd');
+        this.show();
     }
 
     render() {

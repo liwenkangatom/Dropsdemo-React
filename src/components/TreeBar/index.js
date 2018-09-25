@@ -138,11 +138,11 @@ onchangeHandle = (e) => {
     const tree = this.state.data
     let expandedKeys = []
     expandedKeys = tree.map((item) => {
-      if(item.title.indexOf(value) > -1 ) {
+      if(item.title.toLowerCase().indexOf(value.toLowerCase()) > -1 ) {
         return item.pid+''
       }
       return null
-    }).filter((value, index, self)=> value && self.indexOf(value) === index)
+    }).filter((value, index, self)=> value && self.indexOf(value.toLowerCase()) === index)
     console.log(expandedKeys)
     this.setState({
       expandedKeys,
@@ -551,7 +551,7 @@ onchangeHandle = (e) => {
           "backgroundColor": "rgba(124, 124, 124, 0.1)"
         }}}> 
         <MenuItem onClick={this.addhandle} >
-        addTag</MenuItem>
+        Add Tag After</MenuItem>
         </div>
         <div style={{
           width: "118px",
@@ -562,7 +562,7 @@ onchangeHandle = (e) => {
           "fontSize": "14px",
           color: "#7c7c7c"}}> 
             <MenuItem onClick={this.showDeleteConfirm}>
-          deleteTag</MenuItem>
+          Delete</MenuItem>
        </div>
         <div style={{
           width: "118px",
@@ -576,7 +576,7 @@ onchangeHandle = (e) => {
           "backgroundColor": "rgba(124, 124, 124, 0.1)"
         }}}> 
         <MenuItem onClick={this.changehandle}>
-        changeTag</MenuItem>
+        Rename</MenuItem>
         </div>
     </div>
     let visible = {
@@ -590,7 +590,7 @@ onchangeHandle = (e) => {
       
         <Sider
           
-          onDoubleClick={this.addRootTag}
+          // onDoubleClick={this.addRootTag}
           // onClick={this.exitEdit}
           collapsible
           collapsed={collapsed}
@@ -664,9 +664,12 @@ onchangeHandle = (e) => {
 
 
         <div className="slider" 
-        onDrag={(e)=>{e.persist 
-        this.setState({siderwidth: e.clientX})}} 
-        onDragEnd={(e)=>{
+        style={{
+          cursor: 'w-resize'
+        }}
+        onMouseDown={(e)=>{e.persist 
+        this.setState({siderwidth: e.clientX+10})}} 
+        onMouseUp={(e)=>{
           if(!this.state.collapsed){
             if (e.clientX <= 200) {
               this.setState({

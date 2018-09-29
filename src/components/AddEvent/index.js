@@ -15,6 +15,7 @@ import {
   Close,
   ButtonWrapper,
   ButtonWrapperBack,
+  Tips
 } from './style'
 
 import * as actions from '../Drops/DropsRedux';
@@ -28,6 +29,8 @@ class AddEvent extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
+      show: false,
+      showevent: false,
       count:0,
       total: [0],
       selectpage:1,
@@ -45,29 +48,41 @@ class AddEvent extends Component {
 
   handleOk = () => {
     if (this.props.addtags.length){
-      this.setState({ loading: true });
+      this.setState({show:false});
       const total = this.state.total;
       const addcommits = [];
       total.forEach(item => {
-        addcommits.push(this.props.addcommits[item])
-      })      
-      this.props.addtags.forEach( key =>{
-        this.props.addEventAction(key, addcommits)
+        const addcommit = this.props.addcommits[item];
+          addcommits.push(addcommit)
       })
-      
-      this.props.reAddCommits()
-      setTimeout(() => {
-        this.setState({ 
-          loading: false,
-          confirm: true,
-          visible: false,
-          count: 0,
-          total:[0],
-          selectpage:1,
-        });
-      }, 3000);
+      if(addcommits.every(item => {
+        return (item.subject.length > 0 && item.content.length > 0 && item.date.length > 0)
+      })){
+        this.setState({ loading: true, showevent: false });
+        this.props.addtags.forEach( key =>{
+          this.props.addEventAction(key, addcommits)
+      })
+        this.props.reAddCommits()
+              setTimeout(() => {
+                this.setState({ 
+                  loading: false,
+                  confirm: true,
+                  visible: false,
+                  count: 0,
+                  total:[0],
+                  selectpage:1,
+                });
+              }, 3000);
+      }else {
+        this.setState({
+          showevent: true,
+        })
+      }
+ 
     } else {
-      console.log("NO Tags")
+      this.setState({
+        show: true,
+      })
     }
   }
 
@@ -78,6 +93,8 @@ class AddEvent extends Component {
       count: 0,
       total: [0],
       selectpage:1,
+      show: false,
+      showevent: false,
     });
     this.props.reAddCommits()
   }
@@ -127,7 +144,7 @@ class AddEvent extends Component {
   }
 
   render() {
-		const { visible, loading, total, selectpage, confirm } = this.state;
+		const { visible, loading, total, selectpage, confirm, show, showevent } = this.state;
     return ( 
 			<div>
 				<Button 
@@ -199,6 +216,7 @@ class AddEvent extends Component {
           <ContentWrapper>
             <Content>
               <ContentTitle>Tag</ContentTitle>
+              <Tips className={show === true ? 'show' : 'hidden'}>please select tags</Tips>
                 <TagS />
             </Content>
 
@@ -228,6 +246,7 @@ class AddEvent extends Component {
                   />
                </AddWrapper>
               </ContentTitle>
+              <Tips className={showevent === true ? 'show' : 'hidden'}>Please complete the form</Tips>
             </Content>
 
             {

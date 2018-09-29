@@ -88,31 +88,74 @@ class TreeBar extends Component {
       renamevalue: '',
       addvalue: '',
       addrootvalue:'',
-      confirmVisible: false
+      confirmVisible: false,
+      rootkeys: [],
+      searchTreeData:[]
     }
   }
-onExpandHandle = (expandedKeys) => {
-  this.exitEdit
-  this.setState({
-    expandedKeys,
-    autoExpandParent: false,
-  });
-}
-onSelectHandle = (selectedKeys, info) => {
-  console.log('selected', selectedKeys, info);
-}
-onCheckHandle = (checkedKeys, info) => {
-  this.exitEdit
-  console.log(checkedKeys); 
-  this.props.selectTags(checkedKeys.checked)
-   this.setState({
-    selectedKeys: checkedKeys.checked
-  })
-}
-onCollapseHandle = (collapsed) => {
-  this.setState({ collapsed });
-}
-onchangeHandle = (e) => {
+  onExpandHandle = (expandedKeys) => {
+    this.exitEdit
+    this.setState({
+      expandedKeys,
+      autoExpandParent: false,
+    });
+  }
+  onSelectHandle = (selectedKeys, info) => {
+    console.log('selected', selectedKeys, info);
+  }
+  onCheckHandle = (checkedKeys, info) => {
+    this.exitEdit
+    console.log(checkedKeys); 
+    this.props.selectTags(checkedKeys.checked)
+    this.setState({
+      selectedKeys: checkedKeys.checked
+    })
+  }
+  onCollapseHandle = (collapsed) => {
+    this.setState({ collapsed });
+  }
+  showRootKeys = (expandKeys, list) => {
+    if(expandKeys != []) {
+      expandKeys = Array.from(new Set(expandKeys))
+    let tmp = {} 
+    let showrootkeys = []
+    console.log("shwoRootKeys", list)
+    list.map((item)=>{
+      tmp[item.key] = item.pid
+    })
+    expandKeys.map((item)=> { 
+      while(tmp[item] !== "null" && tmp[item]) {
+        item = tmp[item]
+      }
+      showrootkeys.push(item)
+    })
+    return Array.from(new Set(showrootkeys))
+    }
+    return []
+    
+  }
+  getChildTreeByRoot = (rootKeys) => {
+      let tree = this.state.treeData
+    let result = []
+    tree.map((item) => {
+      // if(item.key.indexOf(rootKeys)> -1){
+      //   result.push(item)
+      // }
+      for(let k of rootKeys){
+        if(k === item.key){
+          result.push(item)
+        }
+      }
+    })
+    return result
+    // for(let i in Tree){
+    //   if(Tree[i].key.indexOf(rootKeys)>-1){
+    //     result.push(Tree[i])
+    //   }
+    // }
+    // return result
+  }
+  onchangeHandle = (e) => {
     const value = e.target.value;
     const tree = this.state.data
     let expandedKeys = []
@@ -122,15 +165,21 @@ onchangeHandle = (e) => {
       }
       return null
     }).filter((value, index, self)=> value && self.indexOf(value.toLowerCase()) === index)
-    console.log(expandedKeys)
+    console.log('expandsKEys', Array.from(new Set(expandedKeys)))
+    console.log('expanddefk', expandedKeys)
+    let rootkeys = this.showRootKeys(expandedKeys, tree)
+    console.log('rootkeys',rootkeys)
+    console.log("rootkeysTree", this.getChildTreeByRoot(rootkeys))
+    let searchTreeData = this.getChildTreeByRoot(rootkeys)
     this.setState({
+      searchTreeData,
+      rootkeys,
       expandedKeys,
       searchValue: value,
       autoExpandParent: true,
     });
-    
   }
-// 收起面板
+  // 收起面板
   toggle = () => {
     console.log(this.state.siderwidth)
     this.props.setsider(!this.state.collapsed?0:this.state.siderwidth)
@@ -168,6 +217,7 @@ onchangeHandle = (e) => {
   }
   changehandle = () => {
     this.setState({
+
       changekey: this.state.rightclickkey,
       addkey: '',
       addroot: false
@@ -212,7 +262,7 @@ onchangeHandle = (e) => {
     if(this.checkvalue(title)){
       let pid = this.state.rightclickkey
       let date = new Date()
-      let key = date.getTime()
+      let key = date.getTime()+''
       
       let node = {key, title, pid}
       let data = this.state.data
@@ -223,13 +273,14 @@ onchangeHandle = (e) => {
         data,
         treeData,
         addkey: '',
-        addvalue:''
+        addvalue:'',
+        searchValue:''
       })
     }else{
       this.setState({
         addkey: '',
         addvalue: '',
-        inputerror: true
+        inputerror: true,
       })
       
     }
@@ -251,7 +302,8 @@ onchangeHandle = (e) => {
         data,
         treeData,
         addroot: false,
-        addvalue:''
+        addvalue:'',
+        searchValue:''
       })
     }else{
       this.setState({
@@ -281,7 +333,8 @@ onchangeHandle = (e) => {
         data,
         treeData,
         changekey: '',
-        renamevalue: ''
+        renamevalue: '',
+        searchValue:''
       }, console.log(this.state))
     }else{
       this.setState({
@@ -320,8 +373,10 @@ onchangeHandle = (e) => {
     let treeData = transData(data)
     this.setState({
       data,
-      treeData
+      treeData,
+      searchValue:''
     })
+    this.props.deleteTagEvent(key);
     // this.props.deleteTag(this.state.rightclickkey)
     // this.props.initTags()
     // this.setState({data: this.props.gData},()=>{
@@ -397,11 +452,17 @@ onchangeHandle = (e) => {
       const beforeStr = item.title.substr(0, index)
       const afterStr = item.title.substr(index + searchValue.length)
       const title = index > -1 ? (
-        <span>
-          <ContextMenuTrigger    id="some_unique_identifier" 
-            collect={()=>{this.setState({rightclickkey:item.key,addkey: '', addRootTag: false, changekey: ''
+        <span style={{
+          display:'block',
+            width:'60px',
+            height: '25px'
+          }}>
+          <ContextMenuTrigger    
+          id="some_unique_identifier" 
+          collect={()=>{this.setState({rightclickkey:item.key,addkey: '', addRootTag: false, changekey: ''
             })}}>
-          <div  onDoubleClick={()=>{
+          <div  
+          onDoubleClick={()=>{
             this.setState({rightclickkey: item.key},()=>{
               this.changehandle()}
           )}}>
@@ -417,6 +478,7 @@ onchangeHandle = (e) => {
           {
             (item.key == changekey)?
               <Input 
+              onBlur={this.exitEdit}
               autoFocus
                 onPressEnter={this.renameaction}
                 onChange={this.renameinputchange} 
@@ -431,6 +493,7 @@ onchangeHandle = (e) => {
             disabled 
             title={
               <Input 
+              onBlur={this.exitEdit}
               autoFocus
               size='small' 
               onPressEnter={this.addaction} 
@@ -452,6 +515,7 @@ onchangeHandle = (e) => {
         {
           (item.key == changekey)?
           <Input 
+          onBlur={this.exitEdit}
           onPressEnter={this.renameaction}
           onChange={this.renameinputchange} 
           value={renamevalue} 
@@ -467,6 +531,7 @@ onchangeHandle = (e) => {
         key={tmptagkey} 
         title={
             <Input 
+            onBlur={this.exitEdit}
             autoFocus
             onPressEnter={this.addaction} 
             onChange={this.addinputchange}
@@ -531,6 +596,9 @@ onchangeHandle = (e) => {
     let unvisible = {
       "display": "none"
     }
+
+
+
     return (
        <Layout style={{ minHeight: '100vh' }} >  
       
@@ -578,13 +646,18 @@ onchangeHandle = (e) => {
           onExpand={this.onExpandHandle}
           onCheck={this.onCheckHandle}
           selectedKeys={selectedKeys}>
-           {loop(this.state.treeData)}
+          {!this.state.searchValue ? loop(this.state.treeData):
+            loop(this.state.searchTreeData)
+          }
+            {/* ?{loop(this.state.searchTreeData)}: */}
+           
            {/* {console.log(this.state.treeData)} */}
            <TreeNode 
             style={(addroot)?visible:unvisible} 
             title={<Input 
-                    // autoFocus
+                    autoFocus
                     // onPressEnter={()=>{this.setState({addroot: false},addTag(this.state.addvalue, null))}} 
+onBlur={this.exitEdit}
                     onPressEnter={this.addrootaction} 
                     onChange={(e)=>{this.setState({addvalue: e.target.value})}} 
                     value={this.state.addvalue}
@@ -668,7 +741,8 @@ const mapDispatchToProps= dispatch => {
       initTags: bindActionCreators(actions.home.treebar.initTags,dispatch),
       selectTags: bindActionCreators(actions.home.treebar.selectTags,dispatch),
       confirmTags: bindActionCreators(actions.home.treebar.confirmTags, dispatch),
-      setsider: bindActionCreators(actions.home.treebar.setsider, dispatch)
+      setsider: bindActionCreators(actions.home.treebar.setsider, dispatch),
+      deleteTagEvent: bindActionCreators(actions.home.event.deleteTagEvent, dispatch)
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TreeBar)

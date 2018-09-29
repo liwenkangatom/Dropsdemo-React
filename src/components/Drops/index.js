@@ -7,9 +7,10 @@ import * as actions from './DropsRedux';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { generateList, humanizeDate } from '../Common/utils';
-import { DisplayWrapper, Number, Text, EventDrops } from './style';
+import { DisplayWrapper, Number, Text, EventDrops, } from './style';
 import _default from 'antd/lib/date-picker';
-
+import { Modal } from 'antd';
+const confirm = Modal.confirm;
 let tooltip;
 let drop;
 let chart;
@@ -17,7 +18,8 @@ let zoom;
 let numberCommitsContainer;
 let zoomStart;
 let zoomEnd;
-
+let start;
+let end;
 // 行颜色
 let line = {
     color : (line, index) => {
@@ -60,9 +62,9 @@ const getshowdata = (selectedKeys, eventtag, data, gdata) =>{
 }
 
 const demoStyle = {
-    width: '80%',
+    width: '100%',
     position: 'absolute',
-    margin: '64px auto'
+    marginTop: '64px',
 }
 
 
@@ -77,7 +79,8 @@ class Drops extends Component {
             },
             loading: false,
             visible: false,
-
+            show: false,
+            showevent: false,
         }
     }
 
@@ -85,16 +88,22 @@ class Drops extends Component {
         const filteredData = chart
             .filteredData()
             .reduce((total, repo) => total.concat(repo.data), []);
-
-        numberCommitsContainer.innerText = filteredData.length;
-        zoomStart.innerText = humanizeDate(chart.scale().domain()[0]);
-        zoomEnd.innerText = humanizeDate(chart.scale().domain()[1]);
+         if(chart.scale().domain()[1].getFullYear()  < 20000 && chart.scale().domain()[0].getFullYear() > 0){
+            numberCommitsContainer.innerText = filteredData.length;
+            start = chart.scale().domain()[0];
+            end = chart.scale().domain()[1];
+            zoomStart.innerText = humanizeDate(start);
+            zoomEnd.innerText = humanizeDate(end);
+        }else {
+            this.show();
+        } 
     };
     
 
     //事件展示
     show = () =>{
         const repositories = getshowdata(this.props.selectedKeys, this.props.eventtag, this.props.data, this.props.gdata );
+        console.log('repo:',repositories);
         const repositoriesData = repositories.map(repository => ({
             name: repository.name,
             data: repository.commits,
@@ -141,14 +150,11 @@ class Drops extends Component {
             d2 = {d3,drop,line,zoom}
         } else {
             const range = {
-                start: chart.scale().domain()[0],
-                end: chart.scale().domain()[1]
+                start: start,
+                end: end
             }
             d2 = {d3,drop,line,zoom,range}
         } 
-        console.log('chart: ',chart)
-        // let d2 = {d3,drop,line,zoom};
-
         chart = eventDrops(d2);
         d3
         .select('#eventdrops-demo')
@@ -159,23 +165,51 @@ class Drops extends Component {
 
     handleOk = () => {
         if(this.props.showtags.length > 0){
-            this.setState({ loading: true });
-            this.props.changeCommit(this.props.changecommit,this.props.showtags); 
-            setTimeout(() => {
-            this.setState({ loading: false, visible: false });
-            }, 3000);
+            const changecommit = this.props.changecommit;
+            this.setState({show:false});
+            if(changecommit.subject.length > 0 && changecommit.content.length > 0 && changecommit.date.length > 0){
+                this.setState({ loading: true,showevent: false });
+                this.props.changeCommit(changecommit,this.props.showtags); 
+                    setTimeout(() => {
+                    this.setState({ loading: false, visible: false });
+                }, 3000);
+            }else{
+                this.setState({showevent: true})
+            }         
+        }else{
+            this.setState({show:true})
         }  
     }
 
     
     handleCancel = () => {
-        this.setState({ visible: false });
+        this.setState({ 
+            visible: false,
+            show: false,
+            showevent: false,
+         });
     }
 
 
     handleDelete = () => {
-        this.props.deleteEvent(this.props.changecommit.key);
-        this.setState({ visible: false });
+        this.setState({ 
+            visible: false,
+            show: false,
+            showevent: false, 
+        });
+        const key = this.props.changecommit.key;
+        const deleteEvent = () => {this.props.deleteEvent(key);console.log("delet")};
+        
+        confirm({
+            title: 'Are you sure delete this task?',
+            okText: 'Yes',
+            okType: 'danger',
+            cancelText: 'No',
+            onOk: deleteEvent,
+            onCancel() {
+              console.log('Cancel');
+            },
+          });
     }
 
     componentDidUpdate() {
@@ -195,7 +229,7 @@ class Drops extends Component {
     }
 
     render() {
-        const { visible, loading, commit } = this.state;
+        const { visible, loading, commit, show, showevent } = this.state;
         return (
             <Fragment>
                 <DisplayWrapper>
@@ -219,6 +253,8 @@ class Drops extends Component {
                     handleCancel={this.handleCancel} 
                     handleDelete={this.handleDelete}
                     commit={commit}
+                    show={show}
+                    showevent={showevent}
                 />
             </Fragment> 
         )

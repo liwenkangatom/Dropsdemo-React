@@ -26,6 +26,7 @@ class ContentText extends Component {
                         resize:'none',
                         background:'#f8fafb',
                     }}
+                    placeholder="Contant"
                     className="scroll"
                     onChange={this.onChange}
                  />

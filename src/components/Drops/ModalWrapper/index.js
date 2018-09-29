@@ -13,7 +13,8 @@ import {
   EventWrapper,
   ButtonWrapper,
   ButtonWrapperBack,
-  ButtonWrapperDelete
+  ButtonWrapperDelete,
+  Tips
 } from '../style';
 
 import {connect } from 'react-redux'
@@ -21,7 +22,7 @@ import {connect } from 'react-redux'
 class ModalWrapper extends Component {
 
     render() {
-        const { visible, handleCancel, handleOk, loading, handleDelete } = this.props;
+        const { visible, handleCancel, handleOk, loading, handleDelete, show, showevent } = this.props;
         // console.log(name) 
         return(
             <Fragment>
@@ -92,11 +93,13 @@ class ModalWrapper extends Component {
                     <ContentWrapper>
                         <Content>
                             <ContentTitle>Tag</ContentTitle>
+                            <Tips className={show === true ? 'show' : 'hidden'}>please select tags</Tips>
                             <TagS />
                         </Content>
 
                         <Content>
                             <ContentTitle>Event</ContentTitle>
+                            <Tips className={showevent === true ? 'show' : 'hidden'}>Please complete the form</Tips>
                         </Content>
 
                         <EventWrapper>

@@ -37,7 +37,19 @@ const GET_CHANGE_KEY = 'GET_CHANGE_KEY'
 const GET_EVENTINDEX = 'GET_EVENTINDEX'
 const ADD_ADDCOMMITS = 'ADD_ADDCOMMITS'
 
+const DELETE_TAG_EVENT = 'DELETE_TAG_EVENT'
+
 // ACTION CREATOR
+
+export const deleteTagEvent = (key) => {
+    return {
+        type: DELETE_TAG_EVENT,
+        params: {
+            key
+        }
+    }
+}
+
 export const getInitEventRedux = () =>{ 
     return {
         url: api.select_Events_Tid_Url,
@@ -249,7 +261,11 @@ export default function EventReducer(state = initState, action) {
             })
 
             commits.forEach(commit => {
-                newState.data.push(commit);
+                if(newState.data.every(item => {
+                    return item.key !== commit.key;              
+                })){
+                 newState.data.push(commit);
+                }
             })
             return newState;
         }
@@ -533,6 +549,22 @@ export default function EventReducer(state = initState, action) {
                 error: true,
             }
         }
+
+        case DELETE_TAG_EVENT: {
+            console.log("deletetag")
+            const tagkey = action.params.key;
+            const newState = JSON.parse(JSON.stringify(state));
+            let eventtag2 = [];
+            newState.eventtag.forEach(item => {
+                if (item.tagkey != tagkey){
+                    eventtag2.push(item)
+                }
+            })
+            newState.eventtag = eventtag2;
+            return newState;
+
+        }
+
         default: {
             return state
         }

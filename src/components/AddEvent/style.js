@@ -125,3 +125,15 @@ export const ButtonWrapperBack = styled.div`
         }
     }
 `
+export const Tips = styled.span`
+    position: absolute;
+    top: 0;
+    left: 60px;
+    &.hidden{
+        opacity:0;
+    }
+    &.show{
+        opacity:1;
+    }
+    color: red;
+`

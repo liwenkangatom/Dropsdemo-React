@@ -41,10 +41,10 @@ const getshowdata = (selectedKeys, eventtag, data, gdata) =>{
             commits:[]
         }
         gdata.forEach((tag) => {
-
-            if(tag.key == key){
+            console.log('tag.taiti',tag.title)
+            if(tag.key == key && tag.title){
                 showdateitem.name = tag.title 
-            }
+            }else return;
         })
         eventtag.forEach((item) => {
             if(item.tagkey == key){

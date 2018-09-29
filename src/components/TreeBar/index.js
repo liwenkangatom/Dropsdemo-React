@@ -358,9 +358,19 @@ class TreeBar extends Component {
     
   }
   deleteaction=()=>{
+    
+    let selectKeys = this.state.selectedKeys
     let data = this.state.data
     let key = this.state.rightclickkey
     let pid = null
+    let newSelectKeys = []
+    selectKeys.map((skey) => 
+      (skey === key)?'':newSelectKeys.push(skey)
+    )
+    this.props.selectTags(newSelectKeys)
+    this.setState({
+      selectedKeys: newSelectKeys
+    })
     for(let k in data){
       if(data[k].key === key){
         pid = data[k].pid

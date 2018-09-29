@@ -102,6 +102,15 @@ export function setsider(siderwidth) {
         }
     }
 }
+export function setgData(newgData) {
+    console.log('newgData', newgData)
+    return {
+        type: 'SET_GDATA',
+        payload: {
+            newgData
+        }
+    }
+}
 // 操作drops state 写在
 // export function onCheck(checkedKeys, info) {
 //     return {
@@ -155,7 +164,8 @@ export default function LeftSlideBarReducer(state = initState, action) {
 
         case ONSELECT: {
             let selectedKeys = action.payload.selectedKeys
-            console.log(selectedKeys)
+
+            console.log('selectedKeys',selectedKeys)
             return {
                 ...state,
                 selectedKeys
@@ -222,6 +232,13 @@ export default function LeftSlideBarReducer(state = initState, action) {
             return {
                 ...state,
                 siderwidth: siderwidth
+            }
+        }
+        case 'SET_GDATA': {
+            let data = action.payload.gData
+            return {
+                ...state,
+                gData: data
             }
         }
         // case RENAME_TAG: {
